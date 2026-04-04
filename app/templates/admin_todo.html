@@ -4,6 +4,10 @@
 
 {% block content %}
 <div class="container-narrow">
+    <style>
+        .todo-title { margin-bottom: 0; font-family: var(--font-body); font-weight: 500; font-size: 1.05rem; }
+        .todo-title.completed { color: var(--text-muted); text-decoration: line-through; }
+    </style>
     <div class="admin-header">
         <div>
             <h1>Góc Todo List</h1>
@@ -35,8 +39,7 @@
                     </button>
                 </form>
                 
-                <h3 style="margin-bottom: 0; font-family: var(--font-body); font-weight: 500; font-size: 1.05rem; 
-                           {% if todo.is_completed %}color: var(--text-muted); text-decoration: line-through;{% endif %}">
+                <h3 class="todo-title {% if todo.is_completed %}completed{% endif %}">
                     {{ todo.title }}
                 </h3>
             </div>
