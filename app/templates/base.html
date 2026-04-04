@@ -10,34 +10,49 @@
 
 <body>
     <header class="site-header">
-        <div class="container">
-            <h1 class="site-title">
-                <a href="{{ url_for('main.home') }}">Nhật ký hành trình</a>
-            </h1>
-            <nav>
+        <div class="container nav-wrap">
+            <div class="brand">
+                <a href="{{ url_for('main.home') }}" class="brand-link">
+                    <span class="brand-dot"></span>
+                    <span>Nhật ký hành trình</span>
+                </a>
+                <p class="brand-subtitle">Nơi lưu giữ những ngày đáng nhớ của riêng đại ca.</p>
+            </div>
+
+            <nav class="main-nav">
                 <a href="{{ url_for('main.home') }}">Trang chủ</a>
-                <a href="{{ url_for('auth.login') }}">Admin</a>
+                <a href="{{ url_for('auth.dashboard') }}">Admin</a>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="flash flash-{{ category }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+    <main class="page-shell">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-stack">
+                {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
 
-        {% block content %}{% endblock %}
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
     <footer class="site-footer">
-        <div class="container">
-            <p>Được xây bằng Python + Flask.</p>
+        <div class="container footer-wrap">
+            <div>
+                <strong>Nhật ký hành trình</strong>
+                <p>Blog cá nhân được xây bằng Python, Flask, Neon, Render và Cloudinary.</p>
+            </div>
+            <div class="footer-note">
+                Chỉ một mình đại ca quản lý nội dung.
+            </div>
         </div>
     </footer>
 </body>

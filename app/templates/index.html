@@ -3,58 +3,68 @@
 {% block title %}Trang chủ | Nhật ký hành trình{% endblock %}
 
 {% block content %}
-<section class="hero diary-hero">
-    <div class="hero-badge">Personal Diary Blog</div>
-    <h2>Nơi lưu giữ những ngày đáng nhớ</h2>
-    <p>
-        Đây là blog cá nhân dạng nhật ký/timeline. Mỗi bài viết là một chặng đường,
-        một ký ức, một ngày đáng nhớ được lưu lại theo thời gian.
-    </p>
-</section>
-
-<section class="timeline">
-    <div class="section-heading">
-        <h3>Dòng thời gian kỷ niệm</h3>
-        <p>Các bài viết mới nhất sẽ xuất hiện ở đầu danh sách.</p>
+<section class="hero-card">
+    <div class="hero-left">
+        <div class="hero-badge">Personal Diary</div>
+        <h1>Những ngày đáng nhớ, được lưu lại tử tế.</h1>
+        <p>
+            Đây là góc nhỏ để lưu những cột mốc, suy nghĩ, hành trình và những khoảnh khắc
+            mà đại ca muốn nhớ thật lâu.
+        </p>
     </div>
 
-    {% if posts %}
-    <div class="timeline-list">
-        {% for post in posts %}
-        <article class="timeline-item">
-            <div class="timeline-line">
-                <span class="timeline-dot"></span>
+    <div class="hero-right">
+        <div class="hero-mini-card">
+            <span class="hero-mini-label">Chế độ</span>
+            <strong>Private writer / Public reader</strong>
+            <p>Một mình đại ca đăng bài. Người khác chỉ đọc được những gì đại ca muốn công khai.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section-head">
+    <div>
+        <h2>Dòng thời gian kỷ niệm</h2>
+        <p>Các bài viết mới nhất sẽ xuất hiện ở đầu danh sách.</p>
+    </div>
+</section>
+
+{% if posts %}
+<section class="timeline-list">
+    {% for post in posts %}
+    <article class="journal-card">
+        <div class="journal-top">
+            <div class="journal-meta">
+                <span class="meta-pill">{{ post.created_at.strftime("%d/%m/%Y %H:%M") }}</span>
             </div>
+        </div>
 
-            <div class="timeline-content">
-                {% if post.cover_image_url %}
-                <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="post-cover-image">
-                {% endif %}
+        {% if post.cover_image_url %}
+        <a href="{{ url_for('main.post_detail', post_id=post.id) }}" class="cover-link">
+            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="post-cover-image">
+        </a>
+        {% endif %}
 
-                <div class="post-date">
-                    {{ post.created_at.strftime("%d/%m/%Y %H:%M") }}
-                </div>
+        <div class="journal-body">
+            <h3>{{ post.title }}</h3>
 
-                <h4>{{ post.title }}</h4>
+            <p class="post-excerpt">
+                {{ post.content[:260] }}{% if post.content|length > 260 %}...{% endif %}
+            </p>
 
-                <p class="post-excerpt">
-                    {{ post.content[:240] }}{% if post.content|length > 240 %}...{% endif %}
-                </p>
-
-                <a class="btn-secondary" href="{{ url_for('main.post_detail', post_id=post.id) }}">
+            <div class="journal-actions">
+                <a class="btn-soft" href="{{ url_for('main.post_detail', post_id=post.id) }}">
                     Xem chi tiết
                 </a>
             </div>
-        </article>
-        {% endfor %}
-    </div>
-    {% else %}
-    <article class="post-card empty">
-        <h4>Chưa có bài viết nào</h4>
-        <p>
-            Hiện tại chưa có bài published nào để hiển thị ngoài public.
-        </p>
+        </div>
     </article>
-    {% endif %}
+    {% endfor %}
 </section>
+{% else %}
+<section class="empty-state">
+    <h3>Chưa có bài viết nào</h3>
+    <p>Hiện tại chưa có bài published nào để hiển thị ngoài public.</p>
+</section>
+{% endif %}
 {% endblock %}

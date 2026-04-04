@@ -3,19 +3,42 @@
 {% block title %}Sửa bài viết{% endblock %}
 
 {% block content %}
-<section class="auth-box">
-    <h2>Sửa bài viết</h2>
+<section class="editor-shell">
+    <div class="editor-head">
+        <div>
+            <h1>Sửa bài viết</h1>
+            <p>Chỉnh lại nội dung, trạng thái hoặc ảnh bìa cho bài viết này.</p>
+        </div>
+        <a class="btn-soft" href="{{ url_for('auth.dashboard') }}">Quay lại Dashboard</a>
+    </div>
 
-    <form method="POST" class="post-form">
-        <label for="title">Tiêu đề</label>
-        <input type="text" id="title" name="title" value="{{ post.title }}" required>
+    <form method="POST" enctype="multipart/form-data" class="editor-form">
+        <div class="form-group">
+            <label for="title">Tiêu đề</label>
+            <input type="text" id="title" name="title" value="{{ post.title }}" required>
+        </div>
 
-        <label for="cover_image_url">Link ảnh bìa</label>
-        <input type="text" id="cover_image_url" name="cover_image_url" value="{{ post.cover_image_url or '' }}"
-            placeholder="https://...">
+        {% if post.cover_image_url %}
+        <div class="current-cover-box">
+            <p>Ảnh bìa hiện tại</p>
+            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa hiện tại" class="edit-cover-preview">
+        </div>
 
-        <label for="content">Nội dung</label>
-        <textarea id="content" name="content" rows="10" required>{{ post.content }}</textarea>
+        <label class="checkbox-row">
+            <input type="checkbox" name="remove_cover_image">
+            Xóa ảnh bìa hiện tại
+        </label>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="cover_image">Chọn ảnh bìa mới từ máy</label>
+            <input type="file" id="cover_image" name="cover_image" accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="content">Nội dung</label>
+            <textarea id="content" name="content" rows="12" required>{{ post.content }}</textarea>
+        </div>
 
         <label class="checkbox-row">
             <input type="checkbox" name="is_published" {% if post.is_published %}checked{% endif %}>
@@ -23,8 +46,8 @@
         </label>
 
         <div class="form-actions">
-            <button type="submit">Lưu thay đổi</button>
-            <a class="btn-secondary" href="{{ url_for('auth.dashboard') }}">Quay lại Dashboard</a>
+            <button type="submit" class="btn-primary">Lưu thay đổi</button>
+            <a class="btn-soft" href="{{ url_for('auth.dashboard') }}">Hủy</a>
         </div>
     </form>
 </section>

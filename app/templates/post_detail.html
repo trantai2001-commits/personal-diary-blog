@@ -3,20 +3,24 @@
 {% block title %}{{ post.title }} | Nhật ký hành trình{% endblock %}
 
 {% block content %}
-<section class="post-detail-card">
-    <div class="detail-meta">
+<article class="detail-page">
+    <div class="detail-header">
         <a class="back-link" href="{{ url_for('main.home') }}">← Quay lại trang chủ</a>
-        <div class="post-date">{{ post.created_at.strftime("%d/%m/%Y %H:%M") }}</div>
+        <span class="meta-pill">{{ post.created_at.strftime("%d/%m/%Y %H:%M") }}</span>
     </div>
 
     {% if post.cover_image_url %}
-    <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="detail-cover-image">
+    <div class="detail-cover-wrap">
+        <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="detail-cover-image">
+    </div>
     {% endif %}
 
-    <h2 class="detail-title">{{ post.title }}</h2>
+    <div class="detail-content">
+        <h1>{{ post.title }}</h1>
 
-    <article class="post-detail-body">
-        {{ post.content }}
-    </article>
-</section>
+        <div class="post-detail-body">
+            {{ post.content }}
+        </div>
+    </div>
+</article>
 {% endblock %}

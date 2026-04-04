@@ -3,64 +3,66 @@
 {% block title %}Dashboard Admin{% endblock %}
 
 {% block content %}
-<section class="dashboard-box">
-    <div class="admin-header">
-        <div>
-            <h2>Trang quản trị</h2>
-            <p>Quản lý bài viết nhật ký của đại ca tại đây.</p>
-        </div>
-
-        <a class="btn-primary" href="{{ url_for('auth.create_post') }}">
-            + Tạo bài viết mới
-        </a>
+<section class="admin-hero">
+    <div>
+        <h1>Trang quản trị</h1>
+        <p>Toàn bộ bài viết nhật ký của đại ca được quản lý tại đây.</p>
     </div>
+
+    <a class="btn-primary" href="{{ url_for('auth.create_post') }}">
+        + Tạo bài viết mới
+    </a>
 </section>
 
-<section class="dashboard-box">
-    <h3>Danh sách bài viết</h3>
+<section class="admin-section">
+    <div class="section-head compact">
+        <div>
+            <h2>Danh sách bài viết</h2>
+            <p>Xem nhanh trạng thái, chỉnh sửa hoặc xóa bài.</p>
+        </div>
+    </div>
 
     {% if posts %}
-    <div class="admin-post-list">
+    <div class="admin-grid">
         {% for post in posts %}
-        <article class="admin-post-card">
+        <article class="admin-card">
             {% if post.cover_image_url %}
             <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="admin-cover-thumb">
             {% endif %}
 
-            <div class="admin-post-meta">
-                <span>{{ post.created_at.strftime("%d/%m/%Y %H:%M") }}</span>
+            <div class="admin-card-body">
+                <div class="admin-card-top">
+                    <span class="meta-pill">{{ post.created_at.strftime("%d/%m/%Y %H:%M") }}</span>
 
-                {% if post.is_published %}
-                <span class="status published">Published</span>
-                {% else %}
-                <span class="status draft">Draft</span>
-                {% endif %}
-            </div>
+                    {% if post.is_published %}
+                    <span class="status published">Published</span>
+                    {% else %}
+                    <span class="status draft">Draft</span>
+                    {% endif %}
+                </div>
 
-            <h4>{{ post.title }}</h4>
-            <p>
-                {{ post.content[:180] }}{% if post.content|length > 180 %}...{% endif %}
-            </p>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content[:180] }}{% if post.content|length > 180 %}...{% endif %}</p>
 
-            <div class="post-actions">
-                <a class="btn-secondary" href="{{ url_for('auth.edit_post', post_id=post.id) }}">
-                    Sửa
-                </a>
+                <div class="post-actions">
+                    <a class="btn-soft" href="{{ url_for('auth.edit_post', post_id=post.id) }}">
+                        Sửa
+                    </a>
 
-                <form method="POST" action="{{ url_for('auth.delete_post', post_id=post.id) }}"
-                    onsubmit="return confirm('Đại ca có chắc muốn xóa bài viết này không?');">
-                    <button type="submit" class="btn-danger">Xóa</button>
-                </form>
+                    <form method="POST" action="{{ url_for('auth.delete_post', post_id=post.id) }}"
+                        onsubmit="return confirm('Đại ca có chắc muốn xóa bài viết này không?');">
+                        <button type="submit" class="btn-danger">Xóa</button>
+                    </form>
+                </div>
             </div>
         </article>
         {% endfor %}
     </div>
     {% else %}
-    <p>Chưa có bài viết nào. Hãy tạo bài đầu tiên.</p>
+    <section class="empty-state">
+        <h3>Chưa có bài viết nào</h3>
+        <p>Hãy tạo bài đầu tiên cho nhật ký của đại ca.</p>
+    </section>
     {% endif %}
-</section>
-
-<section class="dashboard-box">
-    <a class="btn-logout" href="{{ url_for('auth.logout') }}">Đăng xuất</a>
 </section>
 {% endblock %}
