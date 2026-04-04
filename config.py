@@ -11,14 +11,14 @@ class Config:
 
     db_url = os.getenv("DATABASE_URL")
 
-    # Khi deploy, ưu tiên PostgreSQL
     if db_url:
-        # Ép SQLAlchemy dùng driver psycopg 3
+        db_url = db_url.strip().strip('"').strip("'")
+
         if db_url.startswith("postgresql://"):
             db_url = db_url.replace("postgresql://", "postgresql+psycopg://", 1)
+
         SQLALCHEMY_DATABASE_URI = db_url
     else:
-        # Local fallback
         SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}"
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
