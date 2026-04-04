@@ -59,6 +59,6 @@ def create_app():
 
         print(f"Đã tạo admin: {username}")
 
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
     return app

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Todo List | Trợ lý của đại ca{% endblock %}
+
+{% block content %}
+<div class="container-narrow">
+    <div class="admin-header">
+        <div>
+            <h1>Góc Todo List</h1>
+            <p style="color: var(--text-muted); margin-top: 4px;">Lưu lại ý tưởng bài viết hoặc task cấu hình blog.</p>
+        </div>
+        <a class="btn-soft" href="{{ url_for('auth.dashboard') }}">Danh sách bài viết</a>
+    </div>
+
+    <!-- Form tạo mới -->
+    <form method="POST" action="{{ url_for('auth.todos') }}" style="display: flex; gap: 10px; margin-bottom: 40px;">
+        <input type="text" name="title" placeholder="Ví dụ: Cần viết bài review chuột phím..." required 
+               style="flex: 1; padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-family: var(--font-body); font-size: 1rem;">
+        <button type="submit" class="btn-primary" style="padding: 14px 24px; white-space: nowrap;">Thêm việc</button>
+    </form>
+
+    <!-- Danh sách công việc -->
+    {% if todos %}
+    <div class="admin-list">
+        {% for todo in todos %}
+        <div class="admin-list-item" style="padding: 12px 20px; flex-direction: row; align-items: center;">
+            <div class="admin-item-content" style="display: flex; align-items: center; gap: 12px;">
+                <form method="POST" action="{{ url_for('auth.toggle_todo', todo_id=todo.id) }}" style="margin: 0;">
+                    <button type="submit" style="background: none; border: none; cursor: pointer; padding: 4px; display: flex;">
+                        {% if todo.is_completed %}
+                        <span style="color: var(--success-text); font-size: 1.2rem;">☑</span>
+                        {% else %}
+                        <span style="color: var(--border); font-size: 1.2rem;">☐</span>
+                        {% endif %}
+                    </button>
+                </form>
+                
+                <h3 style="margin-bottom: 0; font-family: var(--font-body); font-weight: 500; font-size: 1.05rem; 
+                           {% if todo.is_completed %}color: var(--text-muted); text-decoration: line-through;{% endif %}">
+                    {{ todo.title }}
+                </h3>
+            </div>
+
+            <div class="admin-item-actions" style="margin-left: auto;">
+                <form method="POST" action="{{ url_for('auth.delete_todo', todo_id=todo.id) }}" style="margin: 0;">
+                    <button type="submit" style="background: none; border: none; cursor: pointer; color: var(--danger); font-size: 0.9rem;" 
+                            title="Xoá vĩnh viễn">Xoá 
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Tuyệt lắm! Đại ca không còn việc gì nghẽn lại cả.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

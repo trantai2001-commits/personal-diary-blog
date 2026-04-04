@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 
 from app import db
-from app.models import User, Post
+from app.models import User, Post, Todo
 from app.cloudinary_utils import (
     is_allowed_image,
     upload_cover_image,
@@ -187,3 +187,36 @@ def logout():
     logout_user()
     flash("Đã đăng xuất.", "success")
     return redirect(url_for("auth.login"))
+
+@auth_bp.route("/todos", methods=["GET", "POST"])
+@login_required
+def todos():
+    if request.method == "POST":
+        title = request.form.get("title", "").strip()
+        if title:
+            todo = Todo(title=title)
+            db.session.add(todo)
+            db.session.commit()
+            flash("Đã thêm việc mới.", "success")
+        return redirect(url_for("auth.todos"))
+        
+    todo_list = Todo.query.order_by(Todo.created_at.desc()).all()
+    return render_template("admin_todo.html", todos=todo_list)
+
+@auth_bp.route("/todos/<int:todo_id>/toggle", methods=["POST"])
+@login_required
+def toggle_todo(todo_id):
+    todo = db.session.get(Todo, todo_id)
+    if todo:
+        todo.is_completed = not todo.is_completed
+        db.session.commit()
+    return redirect(url_for("auth.todos"))
+
+@auth_bp.route("/todos/<int:todo_id>/delete", methods=["POST"])
+@login_required
+def delete_todo(todo_id):
+    todo = db.session.get(Todo, todo_id)
+    if todo:
+        db.session.delete(todo)
+        db.session.commit()
+    return redirect(url_for("auth.todos"))

@@ -54,3 +54,14 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"<Post {self.title}>"
+
+class Todo(db.Model):
+    __tablename__ = "todos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    is_completed = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Todo {self.title}>"
