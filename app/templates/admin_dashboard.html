@@ -17,7 +17,7 @@
     <section class="admin-header">
         <div>
             <h1>Quản trị nội dung</h1>
-            <p style="color: var(--text-muted); margin-top: 4px;">Nơi đại ca viết và chỉnh sửa bài.</p>
+            <p style="color: var(--text-muted); margin-top: 4px;">Nơi quản lý và chỉnh sửa bài viết.</p>
         </div>
         <a class="btn-primary" href="{{ url_for('auth.create_post') }}">Viết bài mới</a>
     </section>
@@ -47,7 +47,7 @@
             <div class="admin-item-actions">
                 <a class="btn-soft" href="{{ url_for('auth.edit_post', post_id=post.id) }}">Đổi</a>
                 <form method="POST" action="{{ url_for('auth.delete_post', post_id=post.id) }}" style="margin: 0;"
-                    onsubmit="return confirm('Chắc chắn muốn xóa chứ đại ca?');">
+                    onsubmit="return confirm('Chắc chắn muốn xóa bài viết này chứ?');">
                     <button type="submit" class="btn-danger">Xóa</button>
                 </form>
             </div>
