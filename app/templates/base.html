@@ -7,7 +7,8 @@
     <title>{% block title %}Nhật ký hành trình{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Use Inter for body, Lora for headings -> perfect for blogs -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
@@ -16,8 +17,7 @@
         <div class="container nav-wrap">
             <div class="brand">
                 <a href="{{ url_for('main.home') }}" class="brand-link">
-                    <span class="brand-dot"></span>
-                    <span>Nhật ký hành trình</span>
+                    Nhật ký hành trình
                 </a>
                 <p class="brand-subtitle">Nơi lưu giữ những ngày đáng nhớ của riêng đại ca.</p>
             </div>
@@ -30,32 +30,12 @@
     </header>
 
     <main class="page-shell">
-        <div class="container">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div class="flash-stack">
-                {% for category, message in messages %}
-                <div class="flash flash-{{ category }}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-
-            {% block content %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
     </main>
 
     <footer class="site-footer">
-        <div class="container footer-wrap">
-            <div>
-                <strong>Nhật ký hành trình</strong>
-                <p>Blog cá nhân được xây bằng Python, Flask, Neon, Render và Cloudinary.</p>
-            </div>
-            <div class="footer-note">
-                Chỉ một mình đại ca quản lý nội dung.
-            </div>
+        <div class="container">
+            <p>&copy; {{ range(2023, 2027) | random }} Nhật ký hành trình. Xây dựng bằng Flask & CSS thuần.</p>
         </div>
     </footer>
 </body>

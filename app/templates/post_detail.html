@@ -3,24 +3,22 @@
 {% block title %}{{ post.title }} | Nhật ký hành trình{% endblock %}
 
 {% block content %}
-<article class="detail-page">
-    <div class="detail-header">
-        <a class="back-link" href="{{ url_for('main.home') }}">← Quay lại trang chủ</a>
-        <span class="meta-pill">{{ post.created_at.strftime("%d/%m/%Y %H:%M") }}</span>
-    </div>
+<div class="container-narrow">
+    <article class="detail-page">
+        <div class="detail-header">
+            <a class="back-link" href="{{ url_for('main.home') }}">← Quay lại</a>
+            <span class="meta-date" style="margin-bottom: 8px;">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
+            <h1>{{ post.title }}</h1>
+        </div>
 
-    {% if post.cover_image_url %}
-    <div class="detail-cover-wrap">
-        <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="detail-cover-image">
-    </div>
-    {% endif %}
-
-    <div class="detail-content">
-        <h1>{{ post.title }}</h1>
+        {% if post.cover_image_url %}
+        <img src="{{ post.cover_image_url }}" alt="Ảnh bìa" class="detail-cover-image">
+        {% endif %}
 
         <div class="post-detail-body">
-            {{ post.content }}
+            <!-- Ensure whitespace translates to paragraphs via CSS or simple linebreaks if Jinja isn't doing markdown -->
+            <div style="white-space: pre-wrap;">{{ post.content }}</div>
         </div>
-    </div>
-</article>
+    </article>
+</div>
 {% endblock %}

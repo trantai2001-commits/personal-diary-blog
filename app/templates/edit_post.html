@@ -1,15 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Sửa bài viết{% endblock %}
+{% block title %}Sửa bài viết | Nhật ký hành trình{% endblock %}
 
 {% block content %}
-<section class="editor-shell">
-    <div class="editor-head">
-        <div>
-            <h1>Sửa bài viết</h1>
-            <p>Chỉnh lại nội dung, trạng thái hoặc ảnh bìa cho bài viết này.</p>
-        </div>
-        <a class="btn-soft" href="{{ url_for('auth.dashboard') }}">Quay lại Dashboard</a>
+<div class="container-narrow">
+    <div class="admin-header">
+        <h1>Sửa bài viết</h1>
+        <a class="btn-soft" href="{{ url_for('auth.dashboard') }}">Hủy</a>
     </div>
 
     <form method="POST" enctype="multipart/form-data" class="editor-form">
@@ -19,36 +16,32 @@
         </div>
 
         {% if post.cover_image_url %}
-        <div class="current-cover-box">
-            <p>Ảnh bìa hiện tại</p>
-            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa hiện tại" class="edit-cover-preview">
+        <div class="form-group">
+            <label>Ảnh hiện tại</label>
+            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa hiện tại" style="max-height: 200px; border-radius: var(--radius-sm); margin-bottom: 12px; display: block; border: 1px solid var(--border);">
+            <label class="checkbox-row" style="margin-bottom: 0;">
+                <input type="checkbox" name="remove_cover_image" style="width: 18px; height: 18px; accent-color: var(--danger);">
+                <span style="color: var(--danger); font-weight: 500;">Xóa ảnh này</span>
+            </label>
         </div>
-
-        <label class="checkbox-row">
-            <input type="checkbox" name="remove_cover_image">
-            Xóa ảnh bìa hiện tại
-        </label>
         {% endif %}
 
         <div class="form-group">
-            <label for="cover_image">Chọn ảnh bìa mới từ máy</label>
-            <input type="file" id="cover_image" name="cover_image" accept="image/*">
+            <label for="cover_image">Tải ảnh bìa mới (sẽ đè ảnh cũ)</label>
+            <input type="file" id="cover_image" name="cover_image" accept="image/*" style="border: none; padding: 0;">
         </div>
 
         <div class="form-group">
             <label for="content">Nội dung</label>
-            <textarea id="content" name="content" rows="12" required>{{ post.content }}</textarea>
+            <textarea id="content" name="content" required>{{ post.content }}</textarea>
         </div>
 
         <label class="checkbox-row">
-            <input type="checkbox" name="is_published" {% if post.is_published %}checked{% endif %}>
-            Đăng công khai bài viết này
+            <input type="checkbox" name="is_published" {% if post.is_published %}checked{% endif %} style="width: 18px; height: 18px; accent-color: var(--text-main);">
+            <span>Đăng công khai bài viết này</span>
         </label>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">Lưu thay đổi</button>
-            <a class="btn-soft" href="{{ url_for('auth.dashboard') }}">Hủy</a>
-        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; padding: 14px;">Lưu thay đổi</button>
     </form>
-</section>
+</div>
 {% endblock %}

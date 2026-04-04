@@ -1,68 +1,63 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard Admin{% endblock %}
+{% block title %}Dashboard | Nhật ký hành trình{% endblock %}
 
 {% block content %}
-<section class="admin-hero">
-    <div>
-        <h1>Trang quản trị</h1>
-        <p>Toàn bộ bài viết nhật ký của đại ca được quản lý tại đây.</p>
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-stack">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
     </div>
+    {% endif %}
+    {% endwith %}
 
-    <a class="btn-primary" href="{{ url_for('auth.create_post') }}">
-        + Tạo bài viết mới
-    </a>
-</section>
-
-<section class="admin-section">
-    <div class="section-head compact">
+    <section class="admin-header">
         <div>
-            <h2>Danh sách bài viết</h2>
-            <p>Xem nhanh trạng thái, chỉnh sửa hoặc xóa bài.</p>
+            <h1>Quản trị nội dung</h1>
+            <p style="color: var(--text-muted); margin-top: 4px;">Nơi đại ca viết và chỉnh sửa bài.</p>
         </div>
-    </div>
+        <a class="btn-primary" href="{{ url_for('auth.create_post') }}">Viết bài mới</a>
+    </section>
 
     {% if posts %}
-    <div class="admin-grid">
+    <div class="admin-list">
         {% for post in posts %}
-        <article class="admin-card">
+        <div class="admin-list-item">
             {% if post.cover_image_url %}
-            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="admin-cover-thumb">
+            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa" class="admin-item-cover">
+            {% else %}
+            <div class="admin-item-cover" style="background: var(--border-light); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.8rem;">No Image</div>
             {% endif %}
 
-            <div class="admin-card-body">
-                <div class="admin-card-top">
-                    <span class="meta-pill">{{ post.created_at.strftime("%d/%m/%Y %H:%M") }}</span>
-
+            <div class="admin-item-content">
+                <h3>{{ post.title }}</h3>
+                <div class="admin-item-meta">
+                    <span>{{ post.created_at.strftime("%d/%m/%Y") }}</span>
                     {% if post.is_published %}
                     <span class="status published">Published</span>
                     {% else %}
                     <span class="status draft">Draft</span>
                     {% endif %}
                 </div>
-
-                <h3>{{ post.title }}</h3>
-                <p>{{ post.content[:180] }}{% if post.content|length > 180 %}...{% endif %}</p>
-
-                <div class="post-actions">
-                    <a class="btn-soft" href="{{ url_for('auth.edit_post', post_id=post.id) }}">
-                        Sửa
-                    </a>
-
-                    <form method="POST" action="{{ url_for('auth.delete_post', post_id=post.id) }}"
-                        onsubmit="return confirm('Đại ca có chắc muốn xóa bài viết này không?');">
-                        <button type="submit" class="btn-danger">Xóa</button>
-                    </form>
-                </div>
             </div>
-        </article>
+
+            <div class="admin-item-actions">
+                <a class="btn-soft" href="{{ url_for('auth.edit_post', post_id=post.id) }}">Đổi</a>
+                <form method="POST" action="{{ url_for('auth.delete_post', post_id=post.id) }}" style="margin: 0;"
+                    onsubmit="return confirm('Chắc chắn muốn xóa chứ đại ca?');">
+                    <button type="submit" class="btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
         {% endfor %}
     </div>
     {% else %}
-    <section class="empty-state">
-        <h3>Chưa có bài viết nào</h3>
-        <p>Hãy tạo bài đầu tiên cho nhật ký của đại ca.</p>
-    </section>
+    <div class="empty-state">
+        <p>Chưa có bài viết nào. Hãy bắt đầu viết dòng nhật ký đầu tiên.</p>
+    </div>
     {% endif %}
-</section>
+</div>
 {% endblock %}
