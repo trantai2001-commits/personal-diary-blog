@@ -15,6 +15,10 @@ def home():
 def post_detail(slug):
     post = Post.query.filter_by(slug=slug, is_published=True).first()
 
+    # Fallback cho các bài viết cũ chưa có slug (lấy ID)
+    if post is None and slug.isdigit():
+        post = Post.query.filter_by(id=int(slug), is_published=True).first()
+
     if post is None:
         abort(404)
 

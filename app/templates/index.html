@@ -17,7 +17,7 @@
         {% for post in posts %}
         <article class="journal-card{% if post.is_featured %} featured-post{% endif %}">
             {% if post.cover_image_url %}
-            <a href="{{ url_for('main.post_detail', slug=post.slug) }}">
+            <a href="{{ url_for('main.post_detail', slug=(post.slug or post.id)) }}">
                 <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="post-cover-image">
             </a>
             {% endif %}
@@ -31,7 +31,7 @@
                     {% endif %}
                 </div>
                 <h3>
-                    <a href="{{ url_for('main.post_detail', slug=post.slug) }}">{{ post.title }}</a>
+                    <a href="{{ url_for('main.post_detail', slug=(post.slug or post.id)) }}">{{ post.title }}</a>
                 </h3>
                 <p class="post-excerpt">
                     {{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}
