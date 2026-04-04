@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Sửa bài viết{% endblock %}
+
+{% block content %}
+<section class="auth-box">
+    <h2>Sửa bài viết</h2>
+
+    <form method="POST" class="post-form">
+        <label for="title">Tiêu đề</label>
+        <input type="text" id="title" name="title" value="{{ post.title }}" required>
+
+        <label for="cover_image_url">Link ảnh bìa</label>
+        <input type="text" id="cover_image_url" name="cover_image_url" value="{{ post.cover_image_url or '' }}"
+            placeholder="https://...">
+
+        <label for="content">Nội dung</label>
+        <textarea id="content" name="content" rows="10" required>{{ post.content }}</textarea>
+
+        <label class="checkbox-row">
+            <input type="checkbox" name="is_published" {% if post.is_published %}checked{% endif %}>
+            Đăng công khai bài viết này
+        </label>
+
+        <div class="form-actions">
+            <button type="submit">Lưu thay đổi</button>
+            <a class="btn-secondary" href="{{ url_for('auth.dashboard') }}">Quay lại Dashboard</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

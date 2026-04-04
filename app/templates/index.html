@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ | Nhật ký hành trình{% endblock %}
+
+{% block content %}
+<section class="hero diary-hero">
+    <div class="hero-badge">Personal Diary Blog</div>
+    <h2>Nơi lưu giữ những ngày đáng nhớ</h2>
+    <p>
+        Đây là blog cá nhân dạng nhật ký/timeline. Mỗi bài viết là một chặng đường,
+        một ký ức, một ngày đáng nhớ được lưu lại theo thời gian.
+    </p>
+</section>
+
+<section class="timeline">
+    <div class="section-heading">
+        <h3>Dòng thời gian kỷ niệm</h3>
+        <p>Các bài viết mới nhất sẽ xuất hiện ở đầu danh sách.</p>
+    </div>
+
+    {% if posts %}
+    <div class="timeline-list">
+        {% for post in posts %}
+        <article class="timeline-item">
+            <div class="timeline-line">
+                <span class="timeline-dot"></span>
+            </div>
+
+            <div class="timeline-content">
+                {% if post.cover_image_url %}
+                <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="post-cover-image">
+                {% endif %}
+
+                <div class="post-date">
+                    {{ post.created_at.strftime("%d/%m/%Y %H:%M") }}
+                </div>
+
+                <h4>{{ post.title }}</h4>
+
+                <p class="post-excerpt">
+                    {{ post.content[:240] }}{% if post.content|length > 240 %}...{% endif %}
+                </p>
+
+                <a class="btn-secondary" href="{{ url_for('main.post_detail', post_id=post.id) }}">
+                    Xem chi tiết
+                </a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <article class="post-card empty">
+        <h4>Chưa có bài viết nào</h4>
+        <p>
+            Hiện tại chưa có bài published nào để hiển thị ngoài public.
+        </p>
+    </article>
+    {% endif %}
+</section>
+{% endblock %}

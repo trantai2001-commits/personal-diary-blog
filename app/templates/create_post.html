@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Tạo bài viết mới{% endblock %}
+
+{% block content %}
+<section class="auth-box">
+    <h2>Tạo bài viết mới</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="post-form">
+        <label for="title">Tiêu đề</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="cover_image">Ảnh bìa từ máy</label>
+        <input type="file" id="cover_image" name="cover_image" accept="image/*">
+
+        <label for="content">Nội dung</label>
+        <textarea id="content" name="content" rows="10" required></textarea>
+
+        <label class="checkbox-row">
+            <input type="checkbox" name="is_published" checked>
+            Đăng công khai ngay sau khi tạo
+        </label>
+
+        <div class="form-actions">
+            <button type="submit">Lưu bài viết</button>
+            <a class="btn-secondary" href="{{ url_for('auth.dashboard') }}">Quay lại Dashboard</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

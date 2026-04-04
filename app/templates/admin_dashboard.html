@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block content %}
+<section class="dashboard-box">
+    <div class="admin-header">
+        <div>
+            <h2>Trang quản trị</h2>
+            <p>Quản lý bài viết nhật ký của đại ca tại đây.</p>
+        </div>
+
+        <a class="btn-primary" href="{{ url_for('auth.create_post') }}">
+            + Tạo bài viết mới
+        </a>
+    </div>
+</section>
+
+<section class="dashboard-box">
+    <h3>Danh sách bài viết</h3>
+
+    {% if posts %}
+    <div class="admin-post-list">
+        {% for post in posts %}
+        <article class="admin-post-card">
+            {% if post.cover_image_url %}
+            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="admin-cover-thumb">
+            {% endif %}
+
+            <div class="admin-post-meta">
+                <span>{{ post.created_at.strftime("%d/%m/%Y %H:%M") }}</span>
+
+                {% if post.is_published %}
+                <span class="status published">Published</span>
+                {% else %}
+                <span class="status draft">Draft</span>
+                {% endif %}
+            </div>
+
+            <h4>{{ post.title }}</h4>
+            <p>
+                {{ post.content[:180] }}{% if post.content|length > 180 %}...{% endif %}
+            </p>
+
+            <div class="post-actions">
+                <a class="btn-secondary" href="{{ url_for('auth.edit_post', post_id=post.id) }}">
+                    Sửa
+                </a>
+
+                <form method="POST" action="{{ url_for('auth.delete_post', post_id=post.id) }}"
+                    onsubmit="return confirm('Đại ca có chắc muốn xóa bài viết này không?');">
+                    <button type="submit" class="btn-danger">Xóa</button>
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Chưa có bài viết nào. Hãy tạo bài đầu tiên.</p>
+    {% endif %}
+</section>
+
+<section class="dashboard-box">
+    <a class="btn-logout" href="{{ url_for('auth.logout') }}">Đăng xuất</a>
+</section>
+{% endblock %}
