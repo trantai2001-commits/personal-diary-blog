@@ -7,7 +7,10 @@
     <article class="detail-page">
         <div class="detail-header">
             <a class="back-link" href="{{ url_for('main.home') }}">← Quay lại</a>
-            <span class="meta-date" style="margin-bottom: 8px;">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
+            <div style="margin-bottom: 16px;">
+                <span class="meta-date" style="display: inline; margin-right: 8px;">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem;">· {{ post.reading_time }} phút đọc</span>
+            </div>
             <h1>{{ post.title }}</h1>
         </div>
 

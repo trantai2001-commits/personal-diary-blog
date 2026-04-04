@@ -15,17 +15,23 @@
     {% if posts %}
     <section class="journal-list">
         {% for post in posts %}
-        <article class="journal-card">
+        <article class="journal-card{% if post.is_featured %} featured-post{% endif %}">
             {% if post.cover_image_url %}
-            <a href="{{ url_for('main.post_detail', post_id=post.id) }}">
+            <a href="{{ url_for('main.post_detail', slug=post.slug) }}">
                 <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="post-cover-image">
             </a>
             {% endif %}
             
             <div class="journal-body">
-                <span class="meta-date">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
+                <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+                    <span class="meta-date" style="margin-bottom: 0;">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">· {{ post.reading_time }} phút đọc</span>
+                    {% if post.is_featured %}
+                    <span style="background: var(--primary-soft); color: var(--primary); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">📌 Ghim</span>
+                    {% endif %}
+                </div>
                 <h3>
-                    <a href="{{ url_for('main.post_detail', post_id=post.id) }}">{{ post.title }}</a>
+                    <a href="{{ url_for('main.post_detail', slug=post.slug) }}">{{ post.title }}</a>
                 </h3>
                 <p class="post-excerpt">
                     {{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}

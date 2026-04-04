@@ -47,6 +47,7 @@ def create_post():
         title = request.form.get("title", "").strip()
         content = request.form.get("content", "").strip()
         is_published = request.form.get("is_published") == "on"
+        is_featured = request.form.get("is_featured") == "on"
         cover_file = request.files.get("cover_image")
 
         if not title:
@@ -75,9 +76,12 @@ def create_post():
             cover_image_url=cover_image_url,
             cover_image_public_id=cover_image_public_id,
             is_published=is_published,
+            is_featured=is_featured,
         )
 
         db.session.add(post)
+        db.session.flush() # Để lấy post.id auto-increment
+        post.slug = Post.generate_slug(title, post.id)
         db.session.commit()
 
         flash("Đã tạo bài viết thành công.", "success")
@@ -99,6 +103,7 @@ def edit_post(post_id):
         title = request.form.get("title", "").strip()
         content = request.form.get("content", "").strip()
         is_published = request.form.get("is_published") == "on"
+        is_featured = request.form.get("is_featured") == "on"
         remove_cover_image = request.form.get("remove_cover_image") == "on"
         cover_file = request.files.get("cover_image")
 
@@ -111,8 +116,10 @@ def edit_post(post_id):
             return render_template("edit_post.html", post=post)
 
         post.title = title
+        post.slug = Post.generate_slug(title, post.id)
         post.content = content
         post.is_published = is_published
+        post.is_featured = is_featured
 
         if remove_cover_image and not (cover_file and cover_file.filename):
             old_public_id = post.cover_image_public_id

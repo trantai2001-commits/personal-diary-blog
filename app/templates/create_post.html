@@ -25,10 +25,16 @@
             <textarea id="content" name="content" placeholder="Kể lại một chút kỷ niệm..." required></textarea>
         </div>
 
-        <label class="checkbox-row">
-            <input type="checkbox" name="is_published" checked style="width: 18px; height: 18px; accent-color: var(--text-main);">
-            <span>Publish ngay lập tức (hiển thị công khai)</span>
-        </label>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
+            <label class="checkbox-row" style="margin-bottom: 0;">
+                <input type="checkbox" name="is_published" checked style="width: 18px; height: 18px; accent-color: var(--text-main);">
+                <span>Publish ngay lập tức (hiển thị công khai)</span>
+            </label>
+            <label class="checkbox-row" style="margin-bottom: 0;">
+                <input type="checkbox" name="is_featured" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                <span>📌 Ghim bài viết này lên đầu trang chủ</span>
+            </label>
+        </div>
 
         <button type="submit" class="btn-primary" style="width: 100%; padding: 14px;">Lưu & Đăng bài</button>
     </form>

@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
 import click
 
 from config import Config
 
 db = SQLAlchemy()
+migrate = Migrate(render_as_batch=True)
 
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
@@ -17,6 +19,7 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     from app.models import User

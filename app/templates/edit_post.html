@@ -36,10 +36,16 @@
             <textarea id="content" name="content" required>{{ post.content }}</textarea>
         </div>
 
-        <label class="checkbox-row">
-            <input type="checkbox" name="is_published" {% if post.is_published %}checked{% endif %} style="width: 18px; height: 18px; accent-color: var(--text-main);">
-            <span>Đăng công khai bài viết này</span>
-        </label>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
+            <label class="checkbox-row" style="margin-bottom: 0;">
+                <input type="checkbox" name="is_published" {% if post.is_published %}checked{% endif %} style="width: 18px; height: 18px; accent-color: var(--text-main);">
+                <span>Đăng công khai bài viết này</span>
+            </label>
+            <label class="checkbox-row" style="margin-bottom: 0;">
+                <input type="checkbox" name="is_featured" {% if post.is_featured %}checked{% endif %} style="width: 18px; height: 18px; accent-color: var(--primary);">
+                <span>📌 Ghim bài viết này lên đầu trang chủ</span>
+            </label>
+        </div>
 
         <button type="submit" class="btn-primary" style="width: 100%; padding: 14px;">Lưu thay đổi</button>
     </form>
