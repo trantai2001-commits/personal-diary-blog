@@ -7,9 +7,19 @@
     <title>{% block title %}Nhật ký hành trình{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Use Inter for body, Lora for headings -> perfect for blogs -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Prevent flash of wrong theme: apply saved theme immediately -->
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('theme');
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 
 <body>
@@ -29,6 +39,12 @@
                 {% else %}
                 <a href="{{ url_for('auth.dashboard') }}">Admin</a>
                 {% endif %}
+
+                <!-- Dark / Light mode toggle -->
+                <button id="theme-toggle" class="theme-toggle" aria-label="Chuyển đổi giao diện tối/sáng" title="Chuyển giao diện">
+                    <span class="icon-sun">☀️</span>
+                    <span class="icon-moon">🌙</span>
+                </button>
             </nav>
         </div>
     </header>
@@ -39,9 +55,32 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; {{ range(2023, 2027) | random }} Nhật ký hành trình. Xây dựng bằng Flask & CSS thuần.</p>
+            <p>&copy; 2025 Nhật ký hành trình. Xây dựng bằng Flask &amp; CSS thuần.</p>
         </div>
     </footer>
+
+    <script>
+        // Theme toggle logic
+        const toggle = document.getElementById('theme-toggle');
+        const html   = document.documentElement;
+
+        function getTheme() {
+            return localStorage.getItem('theme') ||
+                   (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        }
+
+        function applyTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        // Set initial icon state
+        applyTheme(getTheme());
+
+        toggle.addEventListener('click', function () {
+            applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
+        });
+    </script>
 </body>
 
 </html>

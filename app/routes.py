@@ -7,43 +7,55 @@ from app.models import Post
 main_bp = Blueprint("main", __name__)
 
 
+PER_PAGE = 5
+
 @main_bp.route("/")
 def home():
-    posts = Post.query.filter_by(is_published=True).order_by(Post.is_featured.desc(), Post.created_at.desc()).all()
-
     # Calendar data
     today = datetime.today()
     year  = int(request.args.get('year',  today.year))
     month = int(request.args.get('month', today.month))
+    page  = max(1, int(request.args.get('page', 1)))
 
-    # Clamp to valid range
+    # Clamp month to valid range
     if month < 1:  month = 12; year -= 1
     if month > 12: month = 1;  year += 1
 
-    cal = calendar.Calendar(firstweekday=0)  # Monday first
-    weeks = cal.monthdatescalendar(year, month)
+    # --- Pagination ---
+    all_published = Post.query.filter_by(is_published=True)
+    total = all_published.count()
+    total_pages = max(1, -(-total // PER_PAGE))   # ceiling division
+    page = min(page, total_pages)
 
-    # Collect published post dates for this month
-    all_published = Post.query.filter_by(is_published=True).all()
-    post_dates = set(
-        p.created_at.date()
-        for p in all_published
-        if p.created_at.year == year and p.created_at.month == month
+    posts = (
+        all_published
+        .order_by(Post.is_featured.desc(), Post.created_at.desc())
+        .offset((page - 1) * PER_PAGE)
+        .limit(PER_PAGE)
+        .all()
     )
 
-    # Build post date -> slug map for linking
+    # --- Calendar ---
+    cal   = calendar.Calendar(firstweekday=0)
+    weeks = cal.monthdatescalendar(year, month)
+
+    all_posts_for_cal = Post.query.filter_by(is_published=True).all()
+    post_dates = set(
+        p.created_at.date()
+        for p in all_posts_for_cal
+        if p.created_at.year == year and p.created_at.month == month
+    )
     post_date_slugs = {}
-    for p in all_published:
+    for p in all_posts_for_cal:
         if p.created_at.year == year and p.created_at.month == month:
             d = p.created_at.date()
             if d not in post_date_slugs:
                 post_date_slugs[d] = p.slug or str(p.id)
 
-    import datetime as dt
     prev_month = month - 1 if month > 1 else 12
-    prev_year  = year if month > 1 else year - 1
+    prev_year  = year     if month > 1 else year - 1
     next_month = month + 1 if month < 12 else 1
-    next_year  = year if month < 12 else year + 1
+    next_year  = year      if month < 12 else year + 1
 
     month_names_vi = [
         '', 'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4',
@@ -54,6 +66,8 @@ def home():
     return render_template(
         "index.html",
         posts=posts,
+        page=page,
+        total_pages=total_pages,
         cal_weeks=weeks,
         cal_year=year,
         cal_month=month,
