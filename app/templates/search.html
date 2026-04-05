@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Tìm kiếm{% if q %}: "{{ q }}"{% endif %} | Nhật ký hành trình{% endblock %}
+
+{% block content %}
+<div class="container-narrow">
+    <div class="search-page-header">
+        <h1>Tìm kiếm</h1>
+        <p>Tìm lại một suy nghĩ cũ, trích dẫn tâm đắc hay cột mốc nào đó trong quá khứ.</p>
+    </div>
+
+    <!-- Search Form -->
+    <form action="{{ url_for('main.search') }}" method="GET" class="search-form-full">
+        <div class="search-input-wrap">
+            <span class="search-icon-static">🔍</span>
+            <input
+                type="text"
+                name="q"
+                id="q-full"
+                value="{{ q }}"
+                placeholder="Nhập từ khóa tìm kiếm..."
+                autocomplete="off"
+                autofocus
+                class="search-input-full"
+            >
+            <button type="submit" class="search-submit-btn">Tìm</button>
+        </div>
+    </form>
+
+    <!-- Results -->
+    {% if q %}
+        {% if results %}
+        <div class="search-meta">
+            Tìm thấy <strong>{{ results|length }}</strong> kết quả cho "<em>{{ q }}</em>"
+        </div>
+        <section class="journal-list">
+            {% for post in results %}
+            <article class="journal-card">
+                {% if post.cover_image_url %}
+                <a href="{{ url_for('main.post_detail', slug=(post.slug or post.id)) }}">
+                    <img src="{{ post.cover_image_url }}" alt="Ảnh bìa" class="post-cover-image">
+                </a>
+                {% endif %}
+                <div class="journal-body">
+                    <div class="post-meta-row">
+                        <span class="meta-date">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
+                        <span class="meta-read">· {{ post.reading_time }} phút đọc</span>
+                    </div>
+                    <h3>
+                        <a href="{{ url_for('main.post_detail', slug=(post.slug or post.id)) }}">{{ post.title }}</a>
+                    </h3>
+                    <p class="post-excerpt">
+                        {{ post.content[:220] }}{% if post.content|length > 220 %}...{% endif %}
+                    </p>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+        {% else %}
+        <div class="search-empty">
+            <div class="search-empty-icon">🔎</div>
+            <p>Không tìm thấy bài nào khớp với "<strong>{{ q }}</strong>".</p>
+            <p class="search-empty-hint">Thử từ khóa khác hoặc kiểm tra lại chính tả nhé.</p>
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

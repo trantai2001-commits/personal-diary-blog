@@ -7,9 +7,9 @@
     <article class="detail-page">
         <div class="detail-header">
             <a class="back-link" href="{{ url_for('main.home') }}">← Quay lại</a>
-            <div style="margin-bottom: 16px;">
-                <span class="meta-date" style="display: inline; margin-right: 8px;">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
-                <span style="color: var(--text-muted); font-size: 0.85rem;">· {{ post.reading_time }} phút đọc</span>
+            <div class="post-meta-row" style="justify-content: center; margin-bottom: 16px;">
+                <span class="meta-date">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
+                <span class="meta-read">· {{ post.reading_time }} phút đọc</span>
             </div>
             <h1>{{ post.title }}</h1>
         </div>
@@ -19,9 +19,15 @@
         {% endif %}
 
         <div class="post-detail-body">
-            <!-- Ensure whitespace translates to paragraphs via CSS or simple linebreaks if Jinja isn't doing markdown -->
             <div style="white-space: pre-wrap;">{{ post.content }}</div>
         </div>
+
+        {% if post.local_image_url %}
+        <div class="post-local-image-wrap">
+            <img src="{{ post.local_image_url }}" alt="Ảnh đính kèm" class="post-local-image">
+            <p class="local-image-caption">📷 Ảnh đính kèm</p>
+        </div>
+        {% endif %}
     </article>
 </div>
 {% endblock %}

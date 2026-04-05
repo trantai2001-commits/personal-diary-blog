@@ -4,12 +4,30 @@
 
 {% block content %}
 <div class="container-narrow">
-    <!-- Clean, text-focused Hero -->
+    <!-- Hero -->
     <section class="hero-card">
         <div class="hero-badge">Nhật ký cá nhân</div>
         <h1>Những ngày đáng nhớ, được lưu lại tử tế.</h1>
         <p>Góc nhỏ để tĩnh tâm, viết lại những suy nghĩ, cột mốc và hành trình một cách giản dị nhất.</p>
     </section>
+
+    <!-- On This Day Widget -->
+    {% if on_this_day %}
+    <div class="on-this-day">
+        <div class="otd-header">
+            <span class="otd-icon">🕰️</span>
+            <span class="otd-label">Ngày này năm xưa</span>
+        </div>
+        <div class="otd-list">
+            {% for p in on_this_day %}
+            <a href="{{ url_for('main.post_detail', slug=(p.slug or p.id)) }}" class="otd-item">
+                <span class="otd-year">{{ p.created_at.year }}</span>
+                <span class="otd-title">{{ p.title }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Monthly Calendar Widget -->
     <div class="calendar-widget" aria-label="Lịch tháng">
@@ -48,7 +66,7 @@
         </div>
     </div>
 
-    <!-- Post List: Minimal Cards -->
+    <!-- Post List -->
     {% if posts %}
     <section class="journal-list">
         {% for post in posts %}
@@ -82,7 +100,7 @@
     {% if total_pages > 1 %}
     <nav class="pagination" aria-label="Phân trang bài viết">
         {% if page > 1 %}
-        <a href="{{ url_for('main.home', page=page-1, year=cal_year, month=cal_month) }}" class="page-btn page-prev" aria-label="Trang trước">&#8592; Trước</a>
+        <a href="{{ url_for('main.home', page=page-1, year=cal_year, month=cal_month) }}" class="page-btn page-prev">&#8592; Trước</a>
         {% else %}
         <span class="page-btn page-prev disabled">&#8592; Trước</span>
         {% endif %}
@@ -100,7 +118,7 @@
         </div>
 
         {% if page < total_pages %}
-        <a href="{{ url_for('main.home', page=page+1, year=cal_year, month=cal_month) }}" class="page-btn page-next" aria-label="Trang sau">Sau &#8594;</a>
+        <a href="{{ url_for('main.home', page=page+1, year=cal_year, month=cal_month) }}" class="page-btn page-next">Sau &#8594;</a>
         {% else %}
         <span class="page-btn page-next disabled">Sau &#8594;</span>
         {% endif %}

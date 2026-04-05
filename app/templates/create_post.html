@@ -16,8 +16,14 @@
         </div>
 
         <div class="form-group">
-            <label for="cover_image">Ảnh phân cách (tùy chọn)</label>
-            <input type="file" id="cover_image" name="cover_image" accept="image/*" style="border: none; padding: 0;">
+            <label for="cover_image">Ảnh bìa (Cloudinary · tùy chọn)</label>
+            <input type="file" id="cover_image" name="cover_image" accept="image/*" class="file-input">
+        </div>
+
+        <div class="form-group">
+            <label for="inline_image">📷 Ảnh đính kèm (lưu local · tùy chọn)</label>
+            <input type="file" id="inline_image" name="inline_image" accept="image/*" class="file-input">
+            <small class="form-hint">Hiển thị cuối bài viết. Lưu trực tiếp trên server.</small>
         </div>
 
         <div class="form-group">
@@ -25,18 +31,18 @@
             <textarea id="content" name="content" placeholder="Kể lại một chút kỷ niệm..." required></textarea>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
-            <label class="checkbox-row" style="margin-bottom: 0;">
-                <input type="checkbox" name="is_published" checked style="width: 18px; height: 18px; accent-color: var(--text-main);">
+        <div class="checkbox-group">
+            <label class="checkbox-row">
+                <input type="checkbox" name="is_published" checked>
                 <span>Publish ngay lập tức (hiển thị công khai)</span>
             </label>
-            <label class="checkbox-row" style="margin-bottom: 0;">
-                <input type="checkbox" name="is_featured" style="width: 18px; height: 18px; accent-color: var(--primary);">
+            <label class="checkbox-row">
+                <input type="checkbox" name="is_featured">
                 <span>📌 Ghim bài viết này lên đầu trang chủ</span>
             </label>
         </div>
 
-        <button type="submit" class="btn-primary" style="width: 100%; padding: 14px;">Lưu & Đăng bài</button>
+        <button type="submit" class="btn-primary submit-full">Lưu &amp; Đăng bài</button>
     </form>
 </div>
 {% endblock %}

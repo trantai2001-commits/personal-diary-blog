@@ -15,20 +15,37 @@
             <input type="text" id="title" name="title" value="{{ post.title }}" required>
         </div>
 
+        <!-- Cover image (Cloudinary) -->
         {% if post.cover_image_url %}
         <div class="form-group">
-            <label>Ảnh hiện tại</label>
-            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa hiện tại" style="max-height: 200px; border-radius: var(--radius-sm); margin-bottom: 12px; display: block; border: 1px solid var(--border);">
-            <label class="checkbox-row" style="margin-bottom: 0;">
-                <input type="checkbox" name="remove_cover_image" style="width: 18px; height: 18px; accent-color: var(--danger);">
-                <span style="color: var(--danger); font-weight: 500;">Xóa ảnh này</span>
+            <label>Ảnh bìa hiện tại</label>
+            <img src="{{ post.cover_image_url }}" alt="Ảnh bìa hiện tại" class="preview-image">
+            <label class="checkbox-row">
+                <input type="checkbox" name="remove_cover_image">
+                <span class="text-danger">Xóa ảnh bìa này</span>
             </label>
         </div>
         {% endif %}
-
         <div class="form-group">
-            <label for="cover_image">Tải ảnh bìa mới (sẽ đè ảnh cũ)</label>
-            <input type="file" id="cover_image" name="cover_image" accept="image/*" style="border: none; padding: 0;">
+            <label for="cover_image">Ảnh bìa mới (Cloudinary · sẽ đè ảnh cũ)</label>
+            <input type="file" id="cover_image" name="cover_image" accept="image/*" class="file-input">
+        </div>
+
+        <!-- Inline image (local) -->
+        {% if post.local_image_url %}
+        <div class="form-group">
+            <label>📷 Ảnh đính kèm hiện tại</label>
+            <img src="{{ post.local_image_url }}" alt="Ảnh đính kèm hiện tại" class="preview-image">
+            <label class="checkbox-row">
+                <input type="checkbox" name="remove_inline_image">
+                <span class="text-danger">Xóa ảnh đính kèm này</span>
+            </label>
+        </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="inline_image">📷 Ảnh đính kèm mới (lưu local · tùy chọn)</label>
+            <input type="file" id="inline_image" name="inline_image" accept="image/*" class="file-input">
+            <small class="form-hint">Hiển thị cuối bài viết. Lưu trực tiếp trên server.</small>
         </div>
 
         <div class="form-group">
@@ -36,18 +53,18 @@
             <textarea id="content" name="content" required>{{ post.content }}</textarea>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
-            <label class="checkbox-row" style="margin-bottom: 0;">
-                <input type="checkbox" name="is_published" {% if post.is_published %}checked{% endif %} style="width: 18px; height: 18px; accent-color: var(--text-main);">
+        <div class="checkbox-group">
+            <label class="checkbox-row">
+                <input type="checkbox" name="is_published" {% if post.is_published %}checked{% endif %}>
                 <span>Đăng công khai bài viết này</span>
             </label>
-            <label class="checkbox-row" style="margin-bottom: 0;">
-                <input type="checkbox" name="is_featured" {% if post.is_featured %}checked{% endif %} style="width: 18px; height: 18px; accent-color: var(--primary);">
+            <label class="checkbox-row">
+                <input type="checkbox" name="is_featured" {% if post.is_featured %}checked{% endif %}>
                 <span>📌 Ghim bài viết này lên đầu trang chủ</span>
             </label>
         </div>
 
-        <button type="submit" class="btn-primary" style="width: 100%; padding: 14px;">Lưu thay đổi</button>
+        <button type="submit" class="btn-primary submit-full">Lưu thay đổi</button>
     </form>
 </div>
 {% endblock %}

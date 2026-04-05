@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Prevent flash of wrong theme: apply saved theme immediately -->
+    <!-- Prevent flash of wrong theme -->
     <script>
         (function () {
             try {
@@ -26,10 +26,23 @@
     <header class="site-header">
         <div class="container nav-wrap">
             <div class="brand">
-                <a href="{{ url_for('main.home') }}" class="brand-link">
-                    Nhật ký hành trình
-                </a>
+                <a href="{{ url_for('main.home') }}" class="brand-link">Nhật ký hành trình</a>
             </div>
+
+            <!-- Search bar (desktop) -->
+            <form action="{{ url_for('main.search') }}" method="GET" class="nav-search" role="search">
+                <div class="nav-search-wrap">
+                    <span class="nav-search-icon">🔍</span>
+                    <input
+                        type="text"
+                        name="q"
+                        placeholder="Tìm kiếm..."
+                        autocomplete="off"
+                        class="nav-search-input"
+                        aria-label="Tìm kiếm bài viết"
+                    >
+                </div>
+            </form>
 
             <nav class="main-nav">
                 <a href="{{ url_for('main.home') }}">Trang chủ</a>
@@ -40,12 +53,22 @@
                 <a href="{{ url_for('auth.dashboard') }}">Admin</a>
                 {% endif %}
 
-                <!-- Dark / Light mode toggle -->
-                <button id="theme-toggle" class="theme-toggle" aria-label="Chuyển đổi giao diện tối/sáng" title="Chuyển giao diện">
+                <!-- Dark/Light toggle -->
+                <button id="theme-toggle" class="theme-toggle" aria-label="Chuyển giao diện tối/sáng">
                     <span class="icon-sun">☀️</span>
                     <span class="icon-moon">🌙</span>
                 </button>
             </nav>
+        </div>
+
+        <!-- Mobile search -->
+        <div class="container">
+            <form action="{{ url_for('main.search') }}" method="GET" class="mobile-search" role="search">
+                <div class="nav-search-wrap">
+                    <span class="nav-search-icon">🔍</span>
+                    <input type="text" name="q" placeholder="Tìm kiếm bài viết..." autocomplete="off" class="nav-search-input" aria-label="Tìm kiếm">
+                </div>
+            </form>
         </div>
     </header>
 
@@ -60,7 +83,6 @@
     </footer>
 
     <script>
-        // Theme toggle logic
         const toggle = document.getElementById('theme-toggle');
         const html   = document.documentElement;
 
@@ -68,15 +90,12 @@
             return localStorage.getItem('theme') ||
                    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         }
-
         function applyTheme(theme) {
             html.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
         }
 
-        // Set initial icon state
         applyTheme(getTheme());
-
         toggle.addEventListener('click', function () {
             applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
         });

@@ -30,6 +30,7 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     cover_image_url = db.Column(db.String(500), nullable=True)
     cover_image_public_id = db.Column(db.String(255), nullable=True)
+    local_image_url = db.Column(db.String(500), nullable=True)  # ảnh đính kèm lưu local
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_published = db.Column(db.Boolean, default=True)
     is_featured = db.Column(db.Boolean, default=False)

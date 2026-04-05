@@ -1,31 +1,30 @@
 import calendar
 from datetime import datetime
-from flask import Blueprint, render_template, abort, request, jsonify
+from flask import Blueprint, render_template, abort, request
 
 from app.models import Post
 
 main_bp = Blueprint("main", __name__)
 
-
 PER_PAGE = 5
+
 
 @main_bp.route("/")
 def home():
-    # Calendar data
     today = datetime.today()
     year  = int(request.args.get('year',  today.year))
     month = int(request.args.get('month', today.month))
     page  = max(1, int(request.args.get('page', 1)))
 
-    # Clamp month to valid range
+    # Clamp month
     if month < 1:  month = 12; year -= 1
     if month > 12: month = 1;  year += 1
 
     # --- Pagination ---
     all_published = Post.query.filter_by(is_published=True)
-    total = all_published.count()
-    total_pages = max(1, -(-total // PER_PAGE))   # ceiling division
-    page = min(page, total_pages)
+    total       = all_published.count()
+    total_pages = max(1, -(-total // PER_PAGE))
+    page        = min(page, total_pages)
 
     posts = (
         all_published
@@ -63,6 +62,25 @@ def home():
         'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
     ]
 
+    # --- On This Day ---
+    on_this_day = (
+        Post.query
+        .filter(
+            Post.is_published == True,
+            # SQLite: strftime extracts month-day
+            Post.created_at.isnot(None),
+        )
+        .all()
+    )
+    # Filter in Python: same month+day, different year
+    on_this_day = [
+        p for p in on_this_day
+        if p.created_at.month == today.month
+        and p.created_at.day   == today.day
+        and p.created_at.year  != today.year
+    ]
+    on_this_day.sort(key=lambda p: p.created_at.year, reverse=True)
+
     return render_template(
         "index.html",
         posts=posts,
@@ -79,6 +97,7 @@ def home():
         prev_month=prev_month,
         next_year=next_year,
         next_month=next_month,
+        on_this_day=on_this_day,
     )
 
 
@@ -86,7 +105,6 @@ def home():
 def post_detail(slug):
     post = Post.query.filter_by(slug=slug, is_published=True).first()
 
-    # Fallback cho các bài viết cũ chưa có slug (lấy ID)
     if post is None and slug.isdigit():
         post = Post.query.filter_by(id=int(slug), is_published=True).first()
 
@@ -94,3 +112,21 @@ def post_detail(slug):
         abort(404)
 
     return render_template("post_detail.html", post=post)
+
+
+@main_bp.route("/tim-kiem")
+def search():
+    q = request.args.get("q", "").strip()
+    results = []
+    if q:
+        like = f"%{q}%"
+        results = (
+            Post.query
+            .filter(
+                Post.is_published == True,
+                (Post.title.ilike(like)) | (Post.content.ilike(like))
+            )
+            .order_by(Post.created_at.desc())
+            .all()
+        )
+    return render_template("search.html", q=q, results=results)
