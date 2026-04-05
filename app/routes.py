@@ -1,8 +1,9 @@
 import calendar
-from datetime import datetime
-from flask import Blueprint, render_template, abort, request
+from datetime import datetime, date as date_type
+from flask import Blueprint, render_template, abort, request, redirect, url_for
 
-from app.models import Post
+from app import db
+from app.models import Post, Task
 
 main_bp = Blueprint("main", __name__)
 
@@ -81,6 +82,32 @@ def home():
     ]
     on_this_day.sort(key=lambda p: p.created_at.year, reverse=True)
 
+    # --- Tasks for sidebar ---
+    # Show tasks for today by default, or for clicked date
+    task_date_str = request.args.get('task_date', '')
+    if task_date_str:
+        try:
+            task_date = date_type.fromisoformat(task_date_str)
+        except ValueError:
+            task_date = today.date()
+    else:
+        task_date = today.date()
+
+    day_tasks = (
+        Task.query
+        .filter(
+            db.func.date(Task.created_at) == task_date
+        )
+        .order_by(Task.category, Task.created_at)
+        .all()
+    )
+
+    # Group tasks by category
+    tasks_by_cat = {'work': [], 'study': [], 'life': []}
+    for t in day_tasks:
+        if t.category in tasks_by_cat:
+            tasks_by_cat[t.category].append(t)
+
     return render_template(
         "index.html",
         posts=posts,
@@ -98,6 +125,8 @@ def home():
         next_year=next_year,
         next_month=next_month,
         on_this_day=on_this_day,
+        tasks_by_cat=tasks_by_cat,
+        task_date=task_date,
     )
 
 
@@ -130,3 +159,14 @@ def search():
             .all()
         )
     return render_template("search.html", q=q, results=results)
+
+
+@main_bp.route("/tasks/<int:task_id>/toggle", methods=["POST"])
+def toggle_task_public(task_id):
+    """Toggle task completion from the homepage sidebar."""
+    task = db.session.get(Task, task_id)
+    if task:
+        task.is_completed = not task.is_completed
+        db.session.commit()
+    # Redirect back to referrer or home
+    return redirect(request.referrer or url_for('main.home'))

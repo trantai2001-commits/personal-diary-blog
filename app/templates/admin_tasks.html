@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Task Manager | Quản lý công việc{% endblock %}
+
+{% block content %}
+<div class="container-narrow">
+    <div class="admin-header">
+        <div>
+            <h1>Task Manager</h1>
+            <p style="color: var(--text-muted); margin-top: 4px;">Quản lý công việc theo 3 nhóm: Làm việc · Học tập · Đời sống</p>
+        </div>
+        <a class="btn-soft" href="{{ url_for('auth.dashboard') }}">Danh sách bài viết</a>
+    </div>
+
+    <!-- Form tạo task mới -->
+    <form method="POST" action="{{ url_for('auth.tasks') }}" class="task-create-form">
+        <input type="text" name="content" placeholder="Nội dung task mới..." required class="task-input">
+        <input type="date" name="task_date" value="{{ today.isoformat() }}" class="task-date-input">
+        <select name="category" class="task-category-select">
+            <option value="work">💼 Làm việc</option>
+            <option value="study">📚 Học tập</option>
+            <option value="life">🌿 Đời sống</option>
+        </select>
+        <button type="submit" class="btn-primary task-submit-btn">Thêm</button>
+    </form>
+
+    <!-- Filter tabs -->
+    <div class="task-filter-tabs">
+        <a href="{{ url_for('auth.tasks') }}" class="task-filter-tab {% if not filter_cat %}active{% endif %}">
+            Tất cả
+        </a>
+        <a href="{{ url_for('auth.tasks', cat='work') }}" class="task-filter-tab cat-work {% if filter_cat == 'work' %}active{% endif %}">
+            💼 Làm việc
+        </a>
+        <a href="{{ url_for('auth.tasks', cat='study') }}" class="task-filter-tab cat-study {% if filter_cat == 'study' %}active{% endif %}">
+            📚 Học tập
+        </a>
+        <a href="{{ url_for('auth.tasks', cat='life') }}" class="task-filter-tab cat-life {% if filter_cat == 'life' %}active{% endif %}">
+            🌿 Đời sống
+        </a>
+    </div>
+
+    <!-- Danh sách task -->
+    {% if tasks %}
+    <div class="admin-list">
+        {% for task in tasks %}
+        <div class="admin-list-item task-admin-item {{ task.category }}{% if task.is_completed %} completed{% endif %}">
+            <div class="admin-item-content" style="display: flex; align-items: center; gap: 12px;">
+                <form method="POST" action="{{ url_for('auth.toggle_task', task_id=task.id) }}" style="margin: 0;">
+                    <button type="submit" class="task-check-btn">
+                        {% if task.is_completed %}
+                        <span class="task-checkbox checked">✓</span>
+                        {% else %}
+                        <span class="task-checkbox"></span>
+                        {% endif %}
+                    </button>
+                </form>
+
+                <div class="task-info">
+                    <span class="task-cat-badge {{ task.category }}">{{ task.category_icon }} {{ task.category_label }}</span>
+                    <h3 class="task-admin-title {% if task.is_completed %}completed{% endif %}">
+                        {{ task.content }}
+                    </h3>
+                    <span class="task-date-meta">{{ task.created_at.strftime("%d/%m/%Y · %H:%M") }}</span>
+                </div>
+            </div>
+
+            <div class="admin-item-actions" style="margin-left: auto;">
+                <form method="POST" action="{{ url_for('auth.delete_task', task_id=task.id) }}" style="margin: 0;">
+                    <button type="submit" class="btn-danger" style="padding: 6px 14px; font-size: .82rem;" title="Xoá vĩnh viễn">Xoá</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>🎉 Tuyệt lắm! Không có task nào{% if filter_cat %} trong nhóm này{% endif %}.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

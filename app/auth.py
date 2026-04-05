@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime, date as date_type
 from pathlib import Path
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
@@ -7,7 +8,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 
 from app import db
-from app.models import User, Post, Todo
+from app.models import User, Post, Todo, Task
 from app.cloudinary_utils import (
     is_allowed_image,
     upload_cover_image,
@@ -274,3 +275,67 @@ def delete_todo(todo_id):
         db.session.delete(todo)
         db.session.commit()
     return redirect(url_for("auth.todos"))
+
+
+# ── Task Management (Work / Study / Life) ──────────────────────
+
+@auth_bp.route("/tasks", methods=["GET", "POST"])
+@login_required
+def tasks():
+    if request.method == "POST":
+        content  = request.form.get("content", "").strip()
+        category = request.form.get("category", "work").strip()
+        if category not in ("work", "study", "life"):
+            category = "work"
+        if content:
+            # Handle optional date from form
+            task_date_str = request.form.get("task_date", "")
+            created_at = datetime.utcnow()
+            if task_date_str:
+                try:
+                    # Parse YYYY-MM-DD from HTML5 date input
+                    selected_date = date_type.fromisoformat(task_date_str)
+                    # Keep current time but change date
+                    now = datetime.utcnow()
+                    created_at = datetime.combine(selected_date, now.time())
+                except ValueError:
+                    pass
+
+            task = Task(content=content, category=category, created_at=created_at)
+            db.session.add(task)
+            db.session.commit()
+            flash("Đã thêm task mới.", "success")
+        return redirect(url_for("auth.tasks"))
+
+    filter_cat = request.args.get("cat", "")
+    query = Task.query
+    if filter_cat in ("work", "study", "life"):
+        query = query.filter_by(category=filter_cat)
+    task_list = query.order_by(Task.created_at.desc()).all()
+    return render_template(
+        "admin_tasks.html",
+        tasks=task_list,
+        filter_cat=filter_cat,
+        today=date_type.today()
+    )
+
+
+@auth_bp.route("/tasks/<int:task_id>/toggle", methods=["POST"])
+@login_required
+def toggle_task(task_id):
+    task = db.session.get(Task, task_id)
+    if task:
+        task.is_completed = not task.is_completed
+        db.session.commit()
+    return redirect(url_for("auth.tasks"))
+
+
+@auth_bp.route("/tasks/<int:task_id>/delete", methods=["POST"])
+@login_required
+def delete_task(task_id):
+    task = db.session.get(Task, task_id)
+    if task:
+        db.session.delete(task)
+        db.session.commit()
+        flash("Đã xóa task.", "success")
+    return redirect(url_for("auth.tasks"))

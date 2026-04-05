@@ -66,3 +66,36 @@ class Todo(db.Model):
 
     def __repr__(self):
         return f"<Todo {self.title}>"
+
+
+class Task(db.Model):
+    __tablename__ = "tasks"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(500), nullable=False)
+    category = db.Column(db.String(20), nullable=False, default="work")  # work | study | life
+    is_completed = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    CATEGORY_LABELS = {
+        "work": "Làm việc",
+        "study": "Học tập",
+        "life": "Đời sống",
+    }
+
+    CATEGORY_ICONS = {
+        "work": "💼",
+        "study": "📚",
+        "life": "🌿",
+    }
+
+    @property
+    def category_label(self):
+        return self.CATEGORY_LABELS.get(self.category, self.category)
+
+    @property
+    def category_icon(self):
+        return self.CATEGORY_ICONS.get(self.category, "📋")
+
+    def __repr__(self):
+        return f"<Task {self.content[:30]}>"

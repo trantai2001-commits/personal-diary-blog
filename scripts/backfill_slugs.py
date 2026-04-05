@@ -12,7 +12,7 @@ def backfill():
             print(f"Update post {post.id} -> {post.slug}")
         
         db.session.commit()
-        print(f"Đã cập nhật slug cho {len(posts)} bài viết.")
+        print(f"Updated slugs for {len(posts)} posts.")
 
 if __name__ == "__main__":
     backfill()

@@ -3,132 +3,228 @@
 {% block title %}Trang chủ | Nhật ký hành trình{% endblock %}
 
 {% block content %}
-<div class="container-narrow">
-    <!-- Hero -->
-    <section class="hero-card">
-        <div class="hero-badge">Nhật ký cá nhân</div>
-        <h1>Những ngày đáng nhớ, được lưu lại tử tế.</h1>
-        <p>Góc nhỏ để tĩnh tâm, viết lại những suy nghĩ, cột mốc và hành trình một cách giản dị nhất.</p>
-    </section>
+<div class="container home-grid">
+    <!-- ══════ MAIN COLUMN ══════ -->
+    <div class="home-main">
+        <!-- Hero -->
+        <section class="hero-card">
+            <div class="hero-badge">Nhật ký cá nhân</div>
+            <h1>Những ngày đáng nhớ, được lưu lại tử tế.</h1>
+            <p>Góc nhỏ để tĩnh tâm, viết lại những suy nghĩ, cột mốc và hành trình một cách giản dị nhất.</p>
+        </section>
 
-    <!-- On This Day Widget -->
-    {% if on_this_day %}
-    <div class="on-this-day">
-        <div class="otd-header">
-            <span class="otd-icon">🕰️</span>
-            <span class="otd-label">Ngày này năm xưa</span>
+        <!-- On This Day Widget -->
+        {% if on_this_day %}
+        <div class="on-this-day">
+            <div class="otd-header">
+                <span class="otd-icon">🕰️</span>
+                <span class="otd-label">Ngày này năm xưa</span>
+            </div>
+            <div class="otd-list">
+                {% for p in on_this_day %}
+                <a href="{{ url_for('main.post_detail', slug=(p.slug or p.id)) }}" class="otd-item">
+                    <span class="otd-year">{{ p.created_at.year }}</span>
+                    <span class="otd-title">{{ p.title }}</span>
+                </a>
+                {% endfor %}
+            </div>
         </div>
-        <div class="otd-list">
-            {% for p in on_this_day %}
-            <a href="{{ url_for('main.post_detail', slug=(p.slug or p.id)) }}" class="otd-item">
-                <span class="otd-year">{{ p.created_at.year }}</span>
-                <span class="otd-title">{{ p.title }}</span>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+        {% endif %}
 
-    <!-- Monthly Calendar Widget -->
-    <div class="calendar-widget" aria-label="Lịch tháng">
-        <div class="calendar-header">
-            <a href="{{ url_for('main.home', year=prev_year, month=prev_month) }}" class="cal-nav-btn" aria-label="Tháng trước">&#8592;</a>
-            <span class="cal-title">{{ cal_month_name }} {{ cal_year }}</span>
-            <a href="{{ url_for('main.home', year=next_year, month=next_month) }}" class="cal-nav-btn" aria-label="Tháng sau">&#8594;</a>
+        <!-- Monthly Calendar Widget -->
+        <div class="calendar-widget" aria-label="Lịch tháng">
+            <div class="calendar-header">
+                <a href="{{ url_for('main.home', year=prev_year, month=prev_month) }}" class="cal-nav-btn" aria-label="Tháng trước">&#8592;</a>
+                <span class="cal-title">{{ cal_month_name }} {{ cal_year }}</span>
+                <a href="{{ url_for('main.home', year=next_year, month=next_month) }}" class="cal-nav-btn" aria-label="Tháng sau">&#8594;</a>
+            </div>
+            <div class="calendar-grid">
+                <div class="cal-day-name">T2</div>
+                <div class="cal-day-name">T3</div>
+                <div class="cal-day-name">T4</div>
+                <div class="cal-day-name">T5</div>
+                <div class="cal-day-name">T6</div>
+                <div class="cal-day-name">T7</div>
+                <div class="cal-day-name sun">CN</div>
+                {% for week in cal_weeks %}
+                    {% for day in week %}
+                        {% set is_current_month = (day.month == cal_month) %}
+                        {% set is_today = (day == cal_today) %}
+                        {% set has_post = (day in post_dates) %}
+                        {% set slug = post_date_slugs.get(day) %}
+                        {% set is_task_date = (day == task_date) %}
+                        <div class="cal-day
+                            {% if not is_current_month %} other-month{% endif %}
+                            {% if is_today %} today{% endif %}
+                            {% if has_post %} has-post{% endif %}
+                            {% if is_task_date %} task-selected{% endif %}
+                            {% if day.weekday() == 6 %} sun{% endif %}">
+                            {% if has_post and slug %}
+                                <a href="{{ url_for('main.post_detail', slug=slug) }}" title="Xem bài ngày {{ day.strftime('%d/%m/%Y') }}">{{ day.day }}</a>
+                            {% elif is_current_month %}
+                                <a href="{{ url_for('main.home', year=cal_year, month=cal_month, task_date=day.isoformat()) }}" class="cal-day-task-link" title="Xem task ngày {{ day.strftime('%d/%m/%Y') }}">{{ day.day }}</a>
+                            {% else %}
+                                {{ day.day }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
         </div>
-        <div class="calendar-grid">
-            <div class="cal-day-name">T2</div>
-            <div class="cal-day-name">T3</div>
-            <div class="cal-day-name">T4</div>
-            <div class="cal-day-name">T5</div>
-            <div class="cal-day-name">T6</div>
-            <div class="cal-day-name">T7</div>
-            <div class="cal-day-name sun">CN</div>
-            {% for week in cal_weeks %}
-                {% for day in week %}
-                    {% set is_current_month = (day.month == cal_month) %}
-                    {% set is_today = (day == cal_today) %}
-                    {% set has_post = (day in post_dates) %}
-                    {% set slug = post_date_slugs.get(day) %}
-                    <div class="cal-day
-                        {% if not is_current_month %} other-month{% endif %}
-                        {% if is_today %} today{% endif %}
-                        {% if has_post %} has-post{% endif %}
-                        {% if day.weekday() == 6 %} sun{% endif %}">
-                        {% if has_post and slug %}
-                            <a href="{{ url_for('main.post_detail', slug=slug) }}" title="Xem bài ngày {{ day.strftime('%d/%m/%Y') }}">{{ day.day }}</a>
-                        {% else %}
-                            {{ day.day }}
+
+        <!-- Post List -->
+        {% if posts %}
+        <section class="journal-list">
+            {% for post in posts %}
+            <article class="journal-card{% if post.is_featured %} featured-post{% endif %}">
+                {% if post.cover_image_url %}
+                <a href="{{ url_for('main.post_detail', slug=(post.slug or post.id)) }}">
+                    <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="post-cover-image">
+                </a>
+                {% endif %}
+
+                <div class="journal-body">
+                    <div class="post-meta-row">
+                        <span class="meta-date">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
+                        <span class="meta-read">· {{ post.reading_time }} phút đọc</span>
+                        {% if post.is_featured %}
+                        <span class="meta-featured">📌 Ghim</span>
                         {% endif %}
                     </div>
-                {% endfor %}
+                    <h3>
+                        <a href="{{ url_for('main.post_detail', slug=(post.slug or post.id)) }}">{{ post.title }}</a>
+                    </h3>
+                    <p class="post-excerpt">
+                        {{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}
+                    </p>
+                </div>
+            </article>
             {% endfor %}
-        </div>
-    </div>
+        </section>
 
-    <!-- Post List -->
-    {% if posts %}
-    <section class="journal-list">
-        {% for post in posts %}
-        <article class="journal-card{% if post.is_featured %} featured-post{% endif %}">
-            {% if post.cover_image_url %}
-            <a href="{{ url_for('main.post_detail', slug=(post.slug or post.id)) }}">
-                <img src="{{ post.cover_image_url }}" alt="Ảnh bìa của {{ post.title }}" class="post-cover-image">
-            </a>
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <nav class="pagination" aria-label="Phân trang bài viết">
+            {% if page > 1 %}
+            <a href="{{ url_for('main.home', page=page-1, year=cal_year, month=cal_month) }}" class="page-btn page-prev">&#8592; Trước</a>
+            {% else %}
+            <span class="page-btn page-prev disabled">&#8592; Trước</span>
             {% endif %}
 
-            <div class="journal-body">
-                <div class="post-meta-row">
-                    <span class="meta-date">{{ post.created_at.strftime("%d tháng %m, %Y") }}</span>
-                    <span class="meta-read">· {{ post.reading_time }} phút đọc</span>
-                    {% if post.is_featured %}
-                    <span class="meta-featured">📌 Ghim</span>
+            <div class="page-numbers">
+                {% for p in range(1, total_pages + 1) %}
+                    {% if p == page %}
+                    <span class="page-num active">{{ p }}</span>
+                    {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+                    <a href="{{ url_for('main.home', page=p, year=cal_year, month=cal_month) }}" class="page-num">{{ p }}</a>
+                    {% elif p == page - 3 or p == page + 3 %}
+                    <span class="page-ellipsis">…</span>
                     {% endif %}
-                </div>
-                <h3>
-                    <a href="{{ url_for('main.post_detail', slug=(post.slug or post.id)) }}">{{ post.title }}</a>
-                </h3>
-                <p class="post-excerpt">
-                    {{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}
-                </p>
+                {% endfor %}
             </div>
-        </article>
-        {% endfor %}
-    </section>
 
-    <!-- Pagination -->
-    {% if total_pages > 1 %}
-    <nav class="pagination" aria-label="Phân trang bài viết">
-        {% if page > 1 %}
-        <a href="{{ url_for('main.home', page=page-1, year=cal_year, month=cal_month) }}" class="page-btn page-prev">&#8592; Trước</a>
-        {% else %}
-        <span class="page-btn page-prev disabled">&#8592; Trước</span>
+            {% if page < total_pages %}
+            <a href="{{ url_for('main.home', page=page+1, year=cal_year, month=cal_month) }}" class="page-btn page-next">Sau &#8594;</a>
+            {% else %}
+            <span class="page-btn page-next disabled">Sau &#8594;</span>
+            {% endif %}
+        </nav>
         {% endif %}
 
-        <div class="page-numbers">
-            {% for p in range(1, total_pages + 1) %}
-                {% if p == page %}
-                <span class="page-num active">{{ p }}</span>
-                {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
-                <a href="{{ url_for('main.home', page=p, year=cal_year, month=cal_month) }}" class="page-num">{{ p }}</a>
-                {% elif p == page - 3 or p == page + 3 %}
-                <span class="page-ellipsis">…</span>
-                {% endif %}
-            {% endfor %}
+        {% else %}
+        <section class="empty-state">
+            <p>Hiện tại chưa có bài viết nào được công khai.</p>
+        </section>
+        {% endif %}
+    </div>
+
+    <!-- ══════ SIDEBAR ══════ -->
+    <aside class="home-sidebar">
+        <div class="task-sidebar-widget">
+            <div class="task-sidebar-header">
+                <span class="task-sidebar-icon">📋</span>
+                <div>
+                    <h3 class="task-sidebar-title">Task của ngày</h3>
+                    <span class="task-sidebar-date">{{ task_date.strftime("%d/%m/%Y") }}</span>
+                </div>
+            </div>
+
+            {% set total_tasks = tasks_by_cat['work']|length + tasks_by_cat['study']|length + tasks_by_cat['life']|length %}
+            {% set completed_tasks = (tasks_by_cat['work'] + tasks_by_cat['study'] + tasks_by_cat['life']) | selectattr('is_completed') | list | length %}
+
+            {% if total_tasks > 0 %}
+            <!-- Progress bar -->
+            <div class="task-progress">
+                <div class="task-progress-bar">
+                    <div class="task-progress-fill" style="width: {{ (completed_tasks / total_tasks * 100) | int }}%"></div>
+                </div>
+                <span class="task-progress-text">{{ completed_tasks }}/{{ total_tasks }} hoàn thành</span>
+            </div>
+            {% endif %}
+
+            <!-- Work -->
+            {% if tasks_by_cat['work'] %}
+            <div class="task-cat-group">
+                <div class="task-cat-label cat-work">💼 Làm việc</div>
+                {% for task in tasks_by_cat['work'] %}
+                <div class="task-sidebar-item{% if task.is_completed %} completed{% endif %}">
+                    <form method="POST" action="{{ url_for('main.toggle_task_public', task_id=task.id) }}" class="task-toggle-form">
+                        <button type="submit" class="task-check-btn" title="Toggle">
+                            <span class="task-checkbox{% if task.is_completed %} checked{% endif %}">{% if task.is_completed %}✓{% endif %}</span>
+                        </button>
+                    </form>
+                    <span class="task-content">{{ task.content }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Study -->
+            {% if tasks_by_cat['study'] %}
+            <div class="task-cat-group">
+                <div class="task-cat-label cat-study">📚 Học tập</div>
+                {% for task in tasks_by_cat['study'] %}
+                <div class="task-sidebar-item{% if task.is_completed %} completed{% endif %}">
+                    <form method="POST" action="{{ url_for('main.toggle_task_public', task_id=task.id) }}" class="task-toggle-form">
+                        <button type="submit" class="task-check-btn" title="Toggle">
+                            <span class="task-checkbox{% if task.is_completed %} checked{% endif %}">{% if task.is_completed %}✓{% endif %}</span>
+                        </button>
+                    </form>
+                    <span class="task-content">{{ task.content }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Life -->
+            {% if tasks_by_cat['life'] %}
+            <div class="task-cat-group">
+                <div class="task-cat-label cat-life">🌿 Đời sống</div>
+                {% for task in tasks_by_cat['life'] %}
+                <div class="task-sidebar-item{% if task.is_completed %} completed{% endif %}">
+                    <form method="POST" action="{{ url_for('main.toggle_task_public', task_id=task.id) }}" class="task-toggle-form">
+                        <button type="submit" class="task-check-btn" title="Toggle">
+                            <span class="task-checkbox{% if task.is_completed %} checked{% endif %}">{% if task.is_completed %}✓{% endif %}</span>
+                        </button>
+                    </form>
+                    <span class="task-content">{{ task.content }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if total_tasks == 0 %}
+            <div class="task-empty">
+                <span class="task-empty-icon">✨</span>
+                <p>Chưa có task nào cho ngày này.</p>
+                <p class="task-empty-hint">Click vào ngày trên lịch để xem task.</p>
+            </div>
+            {% endif %}
+
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('auth.tasks') }}" class="task-manage-link">Quản lý Tasks →</a>
+            {% endif %}
         </div>
-
-        {% if page < total_pages %}
-        <a href="{{ url_for('main.home', page=page+1, year=cal_year, month=cal_month) }}" class="page-btn page-next">Sau &#8594;</a>
-        {% else %}
-        <span class="page-btn page-next disabled">Sau &#8594;</span>
-        {% endif %}
-    </nav>
-    {% endif %}
-
-    {% else %}
-    <section class="empty-state">
-        <p>Hiện tại chưa có bài viết nào được công khai.</p>
-    </section>
-    {% endif %}
+    </aside>
 </div>
 {% endblock %}
