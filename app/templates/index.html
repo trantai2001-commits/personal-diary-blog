@@ -11,6 +11,43 @@
         <p>Góc nhỏ để tĩnh tâm, viết lại những suy nghĩ, cột mốc và hành trình một cách giản dị nhất.</p>
     </section>
 
+    <!-- Monthly Calendar Widget -->
+    <div class="calendar-widget" aria-label="Lịch tháng">
+        <div class="calendar-header">
+            <a href="{{ url_for('main.home', year=prev_year, month=prev_month) }}" class="cal-nav-btn" aria-label="Tháng trước">&#8592;</a>
+            <span class="cal-title">{{ cal_month_name }} {{ cal_year }}</span>
+            <a href="{{ url_for('main.home', year=next_year, month=next_month) }}" class="cal-nav-btn" aria-label="Tháng sau">&#8594;</a>
+        </div>
+        <div class="calendar-grid">
+            <div class="cal-day-name">T2</div>
+            <div class="cal-day-name">T3</div>
+            <div class="cal-day-name">T4</div>
+            <div class="cal-day-name">T5</div>
+            <div class="cal-day-name">T6</div>
+            <div class="cal-day-name">T7</div>
+            <div class="cal-day-name sun">CN</div>
+            {% for week in cal_weeks %}
+                {% for day in week %}
+                    {% set is_current_month = (day.month == cal_month) %}
+                    {% set is_today = (day == cal_today) %}
+                    {% set has_post = (day in post_dates) %}
+                    {% set slug = post_date_slugs.get(day) %}
+                    <div class="cal-day
+                        {% if not is_current_month %} other-month{% endif %}
+                        {% if is_today %} today{% endif %}
+                        {% if has_post %} has-post{% endif %}
+                        {% if day.weekday() == 6 %} sun{% endif %}">
+                        {% if has_post and slug %}
+                            <a href="{{ url_for('main.post_detail', slug=slug) }}" title="Xem bài ngày {{ day.strftime('%d/%m/%Y') }}">{{ day.day }}</a>
+                        {% else %}
+                            {{ day.day }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
     <!-- Post List: Minimal Cards -->
     {% if posts %}
     <section class="journal-list">

@@ -471,3 +471,133 @@ textarea {
     .admin-item-actions { width: 100%; justify-content: space-between; }
     .editor-form { padding: 24px; }
 }
+
+/* ================================
+   Calendar Widget
+   ================================ */
+.calendar-widget {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px 24px;
+    margin-bottom: 56px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Header: prev / month-year / next */
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.cal-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+}
+
+.cal-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--border-light);
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: background 0.18s ease, transform 0.18s ease;
+    text-decoration: none;
+}
+
+.cal-nav-btn:hover {
+    background: var(--primary-soft);
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+/* 7-column grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+/* Day-of-week labels */
+.cal-day-name {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    padding: 6px 0 10px;
+}
+
+.cal-day-name.sun { color: var(--primary); }
+
+/* Day cells */
+.cal-day {
+    position: relative;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+    padding: 7px 4px;
+    border-radius: var(--radius-sm);
+    transition: background 0.15s ease;
+    cursor: default;
+}
+
+.cal-day.sun {
+    color: var(--primary);
+}
+
+.cal-day.other-month {
+    color: var(--border);
+}
+
+/* Today highlight */
+.cal-day.today {
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 700;
+    border-radius: 50%;
+}
+
+/* Days with a blog post — dot indicator */
+.cal-day.has-post::after {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 5px;
+    background: var(--primary);
+    border-radius: 50%;
+    margin: 3px auto 0;
+}
+
+.cal-day.has-post a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.cal-day.has-post:hover {
+    background: var(--primary-soft);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.cal-day.has-post.today::after {
+    background: var(--primary-hover);
+}
+
+@media (max-width: 480px) {
+    .calendar-widget { padding: 20px 16px 16px; }
+    .cal-day { font-size: 0.8rem; padding: 5px 2px; }
+    .cal-title { font-size: 1rem; }
+}
