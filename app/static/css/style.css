@@ -488,8 +488,8 @@ img { max-width: 100%; height: auto; display: block; }
     font-family: var(--font-body);
 }
 
-.btn-primary, button[type="submit"] { background: var(--text-main); color: #fff; }
-.btn-primary:hover, button[type="submit"]:hover { background: var(--primary); color: #fff; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); color: #fff; }
 
 .btn-soft { background: var(--border-light); color: var(--text-main); border: 1px solid var(--border); }
 .btn-soft:hover { background: var(--border); }
