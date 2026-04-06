@@ -8,7 +8,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 
 from app import db
-from app.models import User, Post, Todo, Task
+from app.models import User, Post, Todo, Task, DiaryEntry, get_vn_time
 from app.cloudinary_utils import (
     is_allowed_image,
     upload_cover_image,
@@ -290,13 +290,13 @@ def tasks():
         if content:
             # Handle optional date from form
             task_date_str = request.form.get("task_date", "")
-            created_at = datetime.utcnow()
+            created_at = get_vn_time()
             if task_date_str:
                 try:
                     # Parse YYYY-MM-DD from HTML5 date input
                     selected_date = date_type.fromisoformat(task_date_str)
                     # Keep current time but change date
-                    now = datetime.utcnow()
+                    now = get_vn_time()
                     created_at = datetime.combine(selected_date, now.time())
                 except ValueError:
                     pass
@@ -316,7 +316,7 @@ def tasks():
         "admin_tasks.html",
         tasks=task_list,
         filter_cat=filter_cat,
-        today=date_type.today()
+        today=get_vn_time().date()
     )
 
 
@@ -339,3 +339,36 @@ def delete_task(task_id):
         db.session.commit()
         flash("Đã xóa task.", "success")
     return redirect(url_for("auth.tasks"))
+
+
+# ── Diary Management (Emotions / Notes) ─────────────────────
+
+@auth_bp.route("/diary", methods=["GET", "POST"])
+@login_required
+def diary():
+    if request.method == "POST":
+        content = request.form.get("content", "").strip()
+        emotion = request.form.get("emotion", "neutral").strip()
+        if not content:
+            flash("Nội dung không được để trống.", "danger")
+        else:
+            entry = DiaryEntry(content=content, emotion=emotion)
+            db.session.add(entry)
+            db.session.commit()
+            flash("Đã lưu nhật ký.", "success")
+        return redirect(url_for("auth.diary"))
+
+    entries = DiaryEntry.query.order_by(DiaryEntry.created_at.desc()).all()
+    # Mảng để map emoji cho form
+    emotions = DiaryEntry.EMOTION_ICONS
+    return render_template("admin_diary.html", entries=entries, emotions=emotions)
+
+@auth_bp.route("/diary/<int:entry_id>/delete", methods=["POST"])
+@login_required
+def delete_diary(entry_id):
+    entry = db.session.get(DiaryEntry, entry_id)
+    if entry:
+        db.session.delete(entry)
+        db.session.commit()
+        flash("Đã xóa nhật ký.", "success")
+    return redirect(url_for("auth.diary"))

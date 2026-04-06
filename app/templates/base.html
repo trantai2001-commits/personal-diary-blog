@@ -49,6 +49,7 @@
                 {% if current_user.is_authenticated %}
                 <a href="{{ url_for('auth.dashboard') }}">Dashboard</a>
                 <a href="{{ url_for('auth.tasks') }}">Tasks</a>
+                <a href="{{ url_for('auth.diary') }}">Nhật ký</a>
                 {% else %}
                 <a href="{{ url_for('auth.dashboard') }}">Admin</a>
                 {% endif %}

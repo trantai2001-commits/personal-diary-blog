@@ -3,7 +3,7 @@ from datetime import datetime, date as date_type
 from flask import Blueprint, render_template, abort, request, redirect, url_for
 
 from app import db
-from app.models import Post, Task
+from app.models import Post, Task, get_vn_time
 
 main_bp = Blueprint("main", __name__)
 
@@ -12,7 +12,7 @@ PER_PAGE = 5
 
 @main_bp.route("/")
 def home():
-    today = datetime.today()
+    today = get_vn_time()
     year  = int(request.args.get('year',  today.year))
     month = int(request.args.get('month', today.month))
     page  = max(1, int(request.args.get('page', 1)))

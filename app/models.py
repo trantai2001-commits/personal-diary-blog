@@ -1,10 +1,14 @@
 import re
 import unicodedata
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
+
+def get_vn_time():
+    return datetime.utcnow() + timedelta(hours=7)
+
 
 
 class User(UserMixin, db.Model):
@@ -31,7 +35,7 @@ class Post(db.Model):
     cover_image_url = db.Column(db.String(500), nullable=True)
     cover_image_public_id = db.Column(db.String(255), nullable=True)
     local_image_url = db.Column(db.String(500), nullable=True)  # ảnh đính kèm lưu local
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=get_vn_time)
     is_published = db.Column(db.Boolean, default=True)
     is_featured = db.Column(db.Boolean, default=False)
 
@@ -62,7 +66,7 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     is_completed = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=get_vn_time)
 
     def __repr__(self):
         return f"<Todo {self.title}>"
@@ -75,7 +79,7 @@ class Task(db.Model):
     content = db.Column(db.String(500), nullable=False)
     category = db.Column(db.String(20), nullable=False, default="work")  # work | study | life
     is_completed = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=get_vn_time)
 
     CATEGORY_LABELS = {
         "work": "Làm việc",
@@ -99,3 +103,43 @@ class Task(db.Model):
 
     def __repr__(self):
         return f"<Task {self.content[:30]}>"
+
+
+class DiaryEntry(db.Model):
+    __tablename__ = "diary_entries"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    emotion = db.Column(db.String(20), nullable=False, default="neutral")
+    created_at = db.Column(db.DateTime, default=get_vn_time)
+
+    EMOTION_LABELS = {
+        "happy": "Vui vẻ",
+        "sad": "Buồn bã",
+        "angry": "Bực bội",
+        "tired": "Mệt mỏi",
+        "neutral": "Bình thường",
+        "excited": "Hào hứng",
+        "anxious": "Lo âu"
+    }
+
+    EMOTION_ICONS = {
+        "happy": "😀",
+        "sad": "😔",
+        "angry": "😡",
+        "tired": "😫",
+        "neutral": "😐",
+        "excited": "🤩",
+        "anxious": "😰"
+    }
+
+    @property
+    def emotion_label(self):
+        return self.EMOTION_LABELS.get(self.emotion, self.emotion)
+
+    @property
+    def emotion_icon(self):
+        return self.EMOTION_ICONS.get(self.emotion, "📝")
+
+    def __repr__(self):
+        return f"<DiaryEntry {self.emotion} {self.created_at}>"

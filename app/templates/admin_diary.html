@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Nhật ký cảm xúc | Quản trị{% endblock %}
+
+{% block content %}
+<div class="container-narrow">
+    <div class="admin-header">
+        <div>
+            <h1>Nhật ký cảm xúc</h1>
+            <p style="color: var(--text-muted); margin-top: 4px;">Ghi lại dòng cảm xúc, tâm trạng ngắn gọn trong ngày</p>
+        </div>
+        <a class="btn-soft" href="{{ url_for('auth.dashboard') }}">Danh sách bài viết</a>
+    </div>
+
+    <!-- Form tạo diary mới -->
+    <form method="POST" action="{{ url_for('auth.diary') }}" class="task-create-form" style="flex-wrap: wrap; align-items: stretch;">
+        <input type="text" name="content" placeholder="Hôm nay bạn cảm thấy thế nào..." required class="task-input" style="flex: 1 1 100%;">
+        
+        <div style="display: flex; gap: 8px; margin-top: 10px; width: 100%; align-items: center; justify-content: space-between;">
+            <div class="emotion-selector" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;">
+                {% for key, icon in emotions.items() %}
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; background: var(--bg-card); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-color); font-size: 1.1rem; transition: all 0.2s;">
+                    <input type="radio" name="emotion" value="{{ key }}" {% if key == 'neutral' %}checked{% endif %} style="display: none;">
+                    <span class="emo-icon">{{ icon }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            
+            <button type="submit" class="btn-primary task-submit-btn" style="flex-shrink: 0;">Lưu nhật ký</button>
+        </div>
+    </form>
+
+    <style>
+        /* Basic styling for checked radio labels */
+        .emotion-selector label:has(input:checked) {
+            background: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 126, 103, 0.3);
+        }
+        .emotion-selector label:hover {
+            border-color: var(--primary-color);
+        }
+    </style>
+
+    <!-- Danh sách nhật ký -->
+    {% if entries %}
+    <div class="admin-list" style="margin-top: 30px;">
+        {% for entry in entries %}
+        <div class="admin-list-item task-admin-item">
+            <div class="admin-item-content" style="display: flex; align-items: flex-start; gap: 16px; width: 100%;">
+                
+                <div style="font-size: 2rem; line-height: 1; padding: 4px; background: var(--bg-body); border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    {{ entry.emotion_icon }}
+                </div>
+
+                <div class="task-info" style="flex: 1;">
+                    <span class="task-date-meta" style="font-size: 0.85rem; font-weight: 600; color: var(--primary-color); margin-bottom: 4px; display: inline-block;">
+                        {{ entry.created_at.strftime("%d/%m/%Y · %H:%M") }}
+                    </span>
+                    <h3 class="task-admin-title" style="margin: 0; font-size: 1.05rem; font-weight: 500; line-height: 1.5;">
+                        {{ entry.content }}
+                    </h3>
+                </div>
+                
+                <div class="admin-item-actions" style="margin-left: auto;">
+                    <form method="POST" action="{{ url_for('auth.delete_diary', entry_id=entry.id) }}" style="margin: 0;">
+                        <button type="submit" class="btn-danger" style="padding: 6px 14px; font-size: .82rem;" title="Xoá vĩnh viễn">Xoá</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state" style="margin-top: 40px;">
+        <span style="font-size: 3rem; display: block; margin-bottom: 10px;">📔</span>
+        <p>Bắt đầu viết những dòng cảm xúc đầu tiên của bạn.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
