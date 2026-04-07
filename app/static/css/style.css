@@ -612,71 +612,6 @@ textarea { min-height: 380px; resize: vertical; line-height: 1.6; }
     transition: var(--theme-transition);
 }
 
-/* ================================
-   16. Responsive
-   ================================ */
-
-/* Tablet */
-@media (max-width: 900px) {
-    .home-grid {
-        grid-template-columns: 1fr;
-    }
-    .home-sidebar {
-        position: static;
-        top: auto;
-    }
-}
-
-@media (max-width: 768px) {
-    .page-shell { padding: 28px 0 60px; }
-
-    .site-header { padding: 14px 0; }
-    .brand-link  { font-size: 1.2rem; }
-    .main-nav    { gap: 10px; }
-    .main-nav a  { font-size: .83rem; }
-
-    .hero-card   { padding: 36px 0 32px; }
-    .hero-card h1 { font-size: 2rem; }
-    .hero-card p  { font-size: 1rem; }
-
-    .calendar-widget { padding: 18px 20px 14px; }
-
-    .detail-header h1 { font-size: 2rem; }
-
-    .admin-list-item  { flex-direction: column; align-items: flex-start; }
-    .admin-item-actions { width: 100%; justify-content: flex-end; }
-    .editor-form { padding: 22px; }
-
-    .post-cover-image { height: 220px; }
-    .journal-body { padding: 20px; }
-
-    .task-create-form { flex-direction: column; }
-    .task-category-select { min-width: 100%; }
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-    .hero-card h1 { font-size: 1.7rem; }
-
-    /* Compact calendar on very small screens */
-    .calendar-widget { padding: 14px 12px 12px; margin-bottom: 32px; }
-    .cal-title        { font-size: .92rem; }
-    .cal-day-name     { font-size: .62rem; padding: 3px 0 6px; }
-    .cal-day          { font-size: .78rem; padding: 5px 1px; }
-    .cal-nav-btn      { width: 28px; height: 28px; font-size: .85rem; }
-
-    .journal-body { padding: 16px; }
-    .journal-body h3 { font-size: 1.2rem; }
-
-    /* Stack pagination on very small screens */
-    .pagination { gap: 6px; }
-    .page-btn   { padding: 7px 12px; font-size: .82rem; }
-    .page-num   { min-width: 32px; height: 32px; font-size: .82rem; }
-
-    .admin-header { flex-direction: column; align-items: flex-start; }
-
-    .task-sidebar-widget { padding: 16px; }
-}
 
 /* ================================
    On This Day Widget
@@ -778,10 +713,7 @@ textarea { min-height: 380px; resize: vertical; line-height: 1.6; }
 }
 .mobile-search .nav-search-wrap { border-radius: var(--radius-sm); }
 
-@media (max-width: 640px) {
-    .nav-search   { display: none; }       /* hide desktop search on mobile */
-    .mobile-search { display: block; }     /* show mobile search */
-}
+
 
 /* ================================
    Search Results Page
@@ -1343,4 +1275,75 @@ textarea { min-height: 380px; resize: vertical; line-height: 1.6; }
 .task-date-meta {
     font-size: .75rem;
     color: var(--text-muted);
+}
+
+/* ================================
+   16. Responsive (Overriding ALL base styles)
+   ================================ */
+
+/* Tablet */
+@media (max-width: 900px) {
+    .home-grid {
+        grid-template-columns: 1fr;
+    }
+    .home-sidebar {
+        position: static;
+        top: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-shell { padding: 28px 0 60px; }
+
+    .site-header { padding: 14px 0; }
+    .brand-link  { font-size: 1.2rem; }
+    .main-nav    { gap: 10px; }
+    .main-nav a  { font-size: .83rem; }
+
+    .hero-card   { padding: 36px 0 32px; }
+    .hero-card h1 { font-size: 2rem; }
+    .hero-card p  { font-size: 1rem; }
+
+    .calendar-widget { padding: 18px 20px 14px; }
+
+    .detail-header h1 { font-size: 2rem; }
+
+    .admin-list-item  { flex-direction: column; align-items: flex-start; }
+    .admin-item-actions { width: 100%; justify-content: flex-end; }
+    .editor-form { padding: 22px; }
+
+    .post-cover-image { height: 220px; }
+    .journal-body { padding: 20px; }
+
+    .task-create-form { flex-direction: column; }
+    .task-category-select { min-width: 100%; }
+}
+
+@media (max-width: 640px) {
+    .nav-search   { display: none; }       /* hide desktop search on mobile */
+    .mobile-search { display: block; }     /* show mobile search */
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .hero-card h1 { font-size: 1.7rem; }
+
+    /* Compact calendar on very small screens */
+    .calendar-widget { padding: 14px 12px 12px; margin-bottom: 32px; }
+    .cal-title        { font-size: .92rem; }
+    .cal-day-name     { font-size: .62rem; padding: 3px 0 6px; }
+    .cal-day          { font-size: .78rem; padding: 5px 1px; }
+    .cal-nav-btn      { width: 28px; height: 28px; font-size: .85rem; }
+
+    .journal-body { padding: 16px; }
+    .journal-body h3 { font-size: 1.2rem; }
+
+    /* Stack pagination on very small screens */
+    .pagination { gap: 6px; }
+    .page-btn   { padding: 7px 12px; font-size: .82rem; }
+    .page-num   { min-width: 32px; height: 32px; font-size: .82rem; }
+
+    .admin-header { flex-direction: column; align-items: flex-start; }
+
+    .task-sidebar-widget { padding: 16px; }
 }
